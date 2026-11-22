@@ -18,9 +18,7 @@ export async function createBodyDecorations(data: BodyData): Promise<BuiltDecora
   const result: BuiltDecorations = {};
 
   if (data.id === 'sun') {
-    const coronaGeom = new THREE.SphereGeometry(data.radius * 1.45, 64, 32);
-    const coronaMat = createAtmosphereMaterial('#ff9a2a', 2.4, 1.45, true);
-    result.corona = new THREE.Mesh(coronaGeom, coronaMat);
+    // Sun uses its shader surface and natural feathered sprite glow, no harsh 3D shell
     return result;
   }
 

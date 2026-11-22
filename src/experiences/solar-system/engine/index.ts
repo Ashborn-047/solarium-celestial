@@ -58,7 +58,8 @@ export class SolarSystemEngine implements Engine {
     const glowSprite = new THREE.Sprite(
       new THREE.SpriteMaterial({
         map: makeGlowTexture(),
-        color: 0xffaa44,
+        color: 0xffeedd,
+        opacity: 0.55,
         transparent: true,
         blending: THREE.AdditiveBlending,
         depthWrite: false,
