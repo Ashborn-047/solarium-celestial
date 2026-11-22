@@ -1,0 +1,53 @@
+import { BodyData } from '../../shared/types/body';
+
+export const moonData: BodyData = {
+  id: 'moon',
+  name: 'Moon',
+  radius: 0.28,
+  orbitRadius: 3,
+  orbitalPeriod: 27.32,
+  spinPeriod: 27.32,
+  tilt: 0,
+  diameter: '3,474 km',
+  distance: '384,400 km from Earth',
+  orbitDesc: '27.3 days',
+  moonCount: '0',
+  note: 'Highlands and dark maria shaped by billions of years of impacts. Tidally locked, and the only other world humans have walked on.',
+  facts: [
+    ['Diameter', '3,474 km'],
+    ['Distance', '384,400 km'],
+    ['Orbit', '27.3 days'],
+    ['Rotation', 'Tidally locked'],
+  ],
+  inspectorDistance: 2.7,
+  hours: 655,
+  bump: ['@', 0.6],
+  parentId: 'earth',
+};
+
+export const earthData: BodyData = {
+  id: 'earth',
+  name: 'Earth',
+  radius: 1.05,
+  orbitRadius: 23,
+  orbitalPeriod: 365.25,
+  spinPeriod: 1,
+  tilt: 23.4,
+  diameter: '12,742 km',
+  distance: '1.00 AU from the Sun',
+  orbitDesc: '365.25 days',
+  moonCount: '1',
+  note: 'City lights on the night side, drifting clouds and glossy oceans. The only world known to host life. About 71% of its surface is ocean.',
+  facts: [
+    ['Diameter', '12,742 km'],
+    ['Day', '23 h 56 m'],
+    ['Year', '365.25 days'],
+    ['Surface', '15 °C mean'],
+    ['Gravity', '9.8 m/s²'],
+    ['Moons', '1'],
+  ],
+  inspectorDistance: 3.2,
+  hours: 24,
+  atmosphere: ['#5aa0ff', 1.045, 2.2],
+  children: [moonData],
+};

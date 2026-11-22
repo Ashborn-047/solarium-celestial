@@ -9,6 +9,7 @@ export interface RendererOptions {
   antialias?: boolean;
   alpha?: boolean;
   exposure?: number;
+  shadowMap?: boolean;
   mobilePixelRatio?: number;
   desktopPixelRatioMax?: number;
   onContextLost?: (e: Event) => void;
@@ -37,6 +38,7 @@ export function createRenderer(
     antialias = false,
     alpha = false,
     exposure = 1.05,
+    shadowMap = false,
     mobilePixelRatio = 0.85,
     desktopPixelRatioMax = 1.25,
     onContextLost,
@@ -57,6 +59,11 @@ export function createRenderer(
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = exposure;
+
+  if (shadowMap) {
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  }
 
   canvas.addEventListener('webglcontextlost', (e) => {
     e.preventDefault();

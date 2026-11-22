@@ -1,3 +1,5 @@
+import * as THREE from 'three';
+
 export interface BodyFact {
   label: string;
   value: string;
@@ -23,4 +25,19 @@ export interface BodyData {
   scale?: [number, number, number];
   bump?: [string, number];
   hours?: number;
+  inspectorDistance?: number;
+  atmosphere?: [string, number, number]; // [color, scale, radius]
+}
+
+export interface BodyDefinition {
+  data: BodyData;
+  createOverviewMaterial: () => THREE.Material;
+  loadDetailMaterial: () => Promise<THREE.Material>;
+  createAtmosphereMesh?: (sunDir?: THREE.Vector3) => THREE.Mesh | null;
+  createCloudsMesh?: () => Promise<THREE.Mesh | null>;
+  createRingsMesh?: (isInspector?: boolean) => Promise<THREE.Mesh | null>;
+  textures: {
+    paths: Record<string, string>;
+    colorSpaces: Record<string, THREE.ColorSpace>;
+  };
 }

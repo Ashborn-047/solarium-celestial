@@ -1,0 +1,154 @@
+import * as THREE from 'three';
+import { Engine } from '../../../shared/types/engine';
+import { createRenderer } from '../../../shared/three/renderer';
+import { handleResize } from '../../../shared/three/resize';
+import { disposeObject } from '../../../shared/three/dispose';
+import { createSolarStarfield } from './starfield';
+import { createAsteroidBelt } from './asteroid-belt';
+import { TimeController } from './time';
+import { SolarCameraRig } from './camera-rig';
+import { buildSolarSystemTree, SystemNode } from './system-builder';
+import { computeVisibleLabels, LabelItem } from './labels';
+import { makeGlowTexture } from '../../../bodies/procedural';
+
+export class SolarSystemEngine implements Engine {
+  private renderer: THREE.WebGLRenderer | null = null;
+  private scene: THREE.Scene | null = null;
+  private camera: THREE.PerspectiveCamera | null = null;
+  private sysGroup: THREE.Group | null = null;
+  private belt: THREE.Points | null = null;
+  private nodes: SystemNode[] = [];
+  private sunNode: SystemNode | null = null;
+  private animId = 0;
+  private lastTime = 0;
+  private isFrozen = false;
+
+  readonly time = new TimeController();
+  readonly cameraRig = new SolarCameraRig();
+  onLabelsUpdate?: (labels: LabelItem[]) => void;
+  onFocusChange?: (node: SystemNode | null) => void;
+
+  mount(canvas: HTMLCanvasElement): void {
+    this.isFrozen = new URLSearchParams(window.location.search).get('freeze') === '1';
+    this.renderer = createRenderer(canvas, { antialias: true, exposure: 1.0 });
+    if (!this.renderer) return;
+
+    this.scene = new THREE.Scene();
+    this.camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.05, 6000);
+
+    this.scene.add(new THREE.AmbientLight(0xffffff, 0.1));
+    this.scene.add(createSolarStarfield(3000));
+
+    this.sysGroup = new THREE.Group();
+    this.scene.add(this.sysGroup);
+
+    const sunLight = new THREE.PointLight(0xfff0dc, 4, 0, 0);
+    this.sysGroup.add(sunLight);
+
+    const glowSprite = new THREE.Sprite(
+      new THREE.SpriteMaterial({
+        map: makeGlowTexture(),
+        color: 0xffaa44,
+        transparent: true,
+        blending: THREE.AdditiveBlending,
+      })
+    );
+    glowSprite.scale.set(22, 22, 1);
+    this.sysGroup.add(glowSprite);
+
+    this.belt = createAsteroidBelt(2200);
+    this.sysGroup.add(this.belt);
+
+    const { nodes, sunNode } = buildSolarSystemTree(this.sysGroup);
+    this.nodes = nodes;
+    this.sunNode = sunNode;
+
+    this.cameraRig.attach(canvas);
+    this.cameraRig.setFocus(null, this.camera.aspect);
+
+    window.addEventListener('resize', this.onResize);
+    this.lastTime = performance.now();
+    this.loop(this.lastTime);
+  }
+
+  private onResize = (): void => {
+    if (!this.renderer || !this.camera) return;
+    handleResize(this.camera, this.renderer);
+    if (!this.cameraRig.focus) {
+      this.cameraRig.tDist = this.cameraRig.ovDist(this.camera.aspect);
+    }
+  };
+
+  setFocus(node: SystemNode | null): void {
+    if (!this.camera) return;
+    this.cameraRig.setFocus(node, this.camera.aspect);
+    this.onFocusChange?.(node);
+  }
+
+  findNode(id: string): SystemNode | undefined {
+    return this.nodes.find((n) => n.data.id === id);
+  }
+
+  getNodes(): SystemNode[] {
+    return this.nodes;
+  }
+
+  getSunNode(): SystemNode | null {
+    return this.sunNode;
+  }
+
+  private loop = (time: number): void => {
+    this.animId = requestAnimationFrame(this.loop);
+    if (!this.renderer || !this.scene || !this.camera || !this.sysGroup || !this.belt) return;
+
+    const dt = this.isFrozen ? 0 : Math.min((time - this.lastTime) / 1000, 0.05);
+    this.lastTime = time;
+
+    const currentDay = this.isFrozen ? 0 : this.time.update(dt);
+
+    for (const d of this.nodes) {
+      if (d.data.orbitRadius && d.data.orbitalPeriod) {
+        const a = d.phase + (Math.PI * 2 * currentDay) / d.data.orbitalPeriod;
+        d.group.position.set(Math.cos(a) * d.data.orbitRadius, 0, Math.sin(a) * d.data.orbitRadius);
+      }
+      const s = d.data.spinPeriod || d.data.orbitalPeriod || 1;
+      d.mesh.rotation.y = -(Math.PI * 2 * currentDay) / s;
+    }
+
+    this.belt.rotation.y = -currentDay * 0.0004;
+
+    for (const d of this.nodes) {
+      if (d.line) {
+        d.line.visible = !d.parent || d.parent === this.sunNode || d.parent === this.cameraRig.rel;
+      }
+    }
+
+    this.scene.updateMatrixWorld();
+    this.cameraRig.update(dt, this.camera);
+
+    if (this.onLabelsUpdate) {
+      const labels = computeVisibleLabels(
+        this.nodes,
+        this.camera,
+        this.cameraRig.focus,
+        this.cameraRig.rel,
+        window.innerWidth,
+        window.innerHeight
+      );
+      this.onLabelsUpdate(labels);
+    }
+
+    this.renderer.render(this.scene, this.camera);
+  };
+
+  dispose(): void {
+    cancelAnimationFrame(this.animId);
+    window.removeEventListener('resize', this.onResize);
+    this.cameraRig.detach();
+    if (this.scene) disposeObject(this.scene);
+    this.renderer?.dispose();
+    this.renderer = null;
+    this.scene = null;
+    this.camera = null;
+  }
+}

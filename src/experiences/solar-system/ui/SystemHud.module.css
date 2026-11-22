@@ -1,0 +1,152 @@
+.top {
+  position: fixed;
+  top: calc(12px + env(safe-area-inset-top, 0px));
+  left: 16px;
+  right: 16px;
+  pointer-events: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 10;
+}
+
+.titleArea {
+  display: flex;
+  flex-direction: column;
+}
+
+.title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--color-ink);
+}
+
+.subtitle {
+  font-size: 12px;
+  color: var(--color-dim);
+}
+
+.controls {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.speedBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--color-panel);
+  border: 1px solid var(--color-line);
+  color: var(--color-ink);
+  padding: 6px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 13px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.labelsLayer {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.labelBtn {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: auto;
+  background: var(--color-panel);
+  border: 1px solid var(--color-line);
+  color: var(--color-ink);
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transform-origin: center;
+  transition: border-color 0.15s, background-color 0.15s;
+}
+
+.labelActive {
+  background: var(--color-accent);
+  color: #1a1205;
+  border-color: transparent;
+  font-weight: 600;
+}
+
+.dock {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 0 12px calc(12px + env(safe-area-inset-bottom, 0px));
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.card {
+  pointer-events: auto;
+  align-self: flex-start;
+  max-width: min(440px, 100%);
+  box-sizing: border-box;
+  background: var(--color-panel);
+  border: 1px solid var(--color-line);
+  border-radius: 14px;
+  padding: 12px 14px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.cardTitle {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--color-ink);
+}
+
+.cardNote {
+  margin: 4px 0 0;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--color-dim);
+}
+
+.cardFacts {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 3px 14px;
+  font-size: 12.5px;
+  margin: 9px 0 0;
+}
+
+.factLabel {
+  color: var(--color-dim);
+}
+
+.factValue {
+  margin: 0;
+  color: var(--color-ink);
+}
+
+.row {
+  pointer-events: auto;
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding: 2px;
+}
+
+.row::-webkit-scrollbar {
+  display: none;
+}

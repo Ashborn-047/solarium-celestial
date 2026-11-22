@@ -33,3 +33,15 @@ All notable changes to this project are documented here.
 - Created shared Zustand store for simulation state, speed, selection, and collapse flags (`store.ts`)
 - Built modular UI components: `Chip`, `InfoCard`, `SpeedControl`, `BodyChips`, `Loader`
 - Extracted and organized shared GLSL chunks (`noise.glsl`, `tonemap.glsl`, `fresnel.glsl`, `stars.glsl`, `doppler.glsl`, `disk.glsl`, `geodesic.glsl`)
+
+
+## Phase 3 — Texture Extraction, Celestial Bodies & Multi-Experience Router
+
+- Extracted all 42 base64 textures from legacy files into organized public assets (`/public/textures/`)
+- Preserved strict texture color-space manifest (linear for normal/bump/roughness/night, sRGB for albedo)
+- Implemented Black Hole experience (`/black-hole`) with geodesic raymarching and post-processing bloom
+- Implemented comprehensive Celestial Bodies library (Sun, Mercury, Venus, Earth, Mars, Jupiter, Saturn, Uranus, Neptune, Pluto, and 24 moons) with both procedural overview materials and high-fidelity detail materials
+- Implemented Planetary Inspector experience (`/bodies`) with dynamic body loader, atmosphere shaders, Saturn/Uranus ring shadows, and Earth night light attenuation
+- Implemented Solar System experience (`/solar-system`) with 3000-star background, 2200-asteroid belt, multi-body hierarchy, real orbital periods, smooth camera transitions, and dynamic 2D projected labels
+- Built Central Hub page (`/`) with 4 navigational cards and lucide-react iconography
+- Configured React Router with lazy-loaded code-split bundles and suspense fallbacks

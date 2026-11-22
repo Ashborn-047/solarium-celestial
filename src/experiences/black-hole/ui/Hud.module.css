@@ -1,0 +1,51 @@
+.vig {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse at center, transparent 45%, rgba(0, 0, 0, 0.75) 100%);
+  z-index: 10;
+}
+
+.hud {
+  position: fixed;
+  left: 28px;
+  bottom: calc(26px + env(safe-area-inset-bottom, 0px));
+  pointer-events: none;
+  color: var(--ink);
+  font-family: var(--font-serif);
+  z-index: 20;
+}
+
+.title {
+  margin: 0 0 4px;
+  font-size: 22px;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+}
+
+.subtitle {
+  margin: 0;
+  font-size: 13px;
+  color: var(--dim);
+  font-style: italic;
+}
+
+.fade {
+  position: fixed;
+  inset: 0;
+  background: #000;
+  pointer-events: none;
+  transition: opacity 3.5s ease;
+  z-index: 30;
+}
+
+.fadedOut {
+  opacity: 0;
+}
+
+@media (max-width: 600px) {
+  .hud {
+    left: 18px;
+    bottom: 18px;
+  }
+}

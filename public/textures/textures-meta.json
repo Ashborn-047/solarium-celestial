@@ -1,0 +1,254 @@
+{
+  "mercury": {
+    "path": "/public/textures/planets/mercury.jpg",
+    "colorSpace": "srgb",
+    "ext": "jpg",
+    "bytes": 227593
+  },
+  "mercury_b": {
+    "path": "/public/textures/planets/mercury_b.jpg",
+    "colorSpace": "linear",
+    "ext": "jpg",
+    "bytes": 209459
+  },
+  "venus": {
+    "path": "/public/textures/planets/venus.jpg",
+    "colorSpace": "srgb",
+    "ext": "jpg",
+    "bytes": 135012
+  },
+  "venus_b": {
+    "path": "/public/textures/planets/venus_b.jpg",
+    "colorSpace": "linear",
+    "ext": "jpg",
+    "bytes": 150899
+  },
+  "earth": {
+    "path": "/public/textures/planets/earth.jpg",
+    "colorSpace": "srgb",
+    "ext": "jpg",
+    "bytes": 350413
+  },
+  "earth_n": {
+    "path": "/public/textures/planets/earth_n.jpg",
+    "colorSpace": "linear",
+    "ext": "jpg",
+    "bytes": 257027
+  },
+  "earth_r": {
+    "path": "/public/textures/planets/earth_r.jpg",
+    "colorSpace": "linear",
+    "ext": "jpg",
+    "bytes": 157996
+  },
+  "earth_l": {
+    "path": "/public/textures/planets/earth_l.jpg",
+    "colorSpace": "srgb",
+    "ext": "jpg",
+    "bytes": 157491
+  },
+  "earth_c": {
+    "path": "/public/textures/planets/earth_c.png",
+    "colorSpace": "srgb",
+    "ext": "png",
+    "bytes": 359570
+  },
+  "mars": {
+    "path": "/public/textures/planets/mars.jpg",
+    "colorSpace": "srgb",
+    "ext": "jpg",
+    "bytes": 110691
+  },
+  "mars_b": {
+    "path": "/public/textures/planets/mars_b.jpg",
+    "colorSpace": "linear",
+    "ext": "jpg",
+    "bytes": 31797
+  },
+  "jupiter": {
+    "path": "/public/textures/planets/jupiter.jpg",
+    "colorSpace": "srgb",
+    "ext": "jpg",
+    "bytes": 131451
+  },
+  "saturn": {
+    "path": "/public/textures/planets/saturn.jpg",
+    "colorSpace": "srgb",
+    "ext": "jpg",
+    "bytes": 59301
+  },
+  "saturn_ring": {
+    "path": "/public/textures/planets/saturn_ring.png",
+    "colorSpace": "srgb",
+    "ext": "png",
+    "bytes": 2258
+  },
+  "uranus": {
+    "path": "/public/textures/planets/uranus.jpg",
+    "colorSpace": "srgb",
+    "ext": "jpg",
+    "bytes": 8581
+  },
+  "uranus_ring": {
+    "path": "/public/textures/planets/uranus_ring.png",
+    "colorSpace": "srgb",
+    "ext": "png",
+    "bytes": 20570
+  },
+  "neptune": {
+    "path": "/public/textures/planets/neptune.jpg",
+    "colorSpace": "srgb",
+    "ext": "jpg",
+    "bytes": 22620
+  },
+  "pluto": {
+    "path": "/public/textures/planets/pluto.jpg",
+    "colorSpace": "srgb",
+    "ext": "jpg",
+    "bytes": 251403
+  },
+  "moon": {
+    "path": "/public/textures/moons/moon.jpg",
+    "colorSpace": "srgb",
+    "ext": "jpg",
+    "bytes": 191154
+  },
+  "io": {
+    "path": "/public/textures/moons/io.jpg",
+    "colorSpace": "srgb",
+    "ext": "jpg",
+    "bytes": 239831
+  },
+  "europa": {
+    "path": "/public/textures/moons/europa.jpg",
+    "colorSpace": "srgb",
+    "ext": "jpg",
+    "bytes": 256714
+  },
+  "ganymede": {
+    "path": "/public/textures/moons/ganymede.jpg",
+    "colorSpace": "srgb",
+    "ext": "jpg",
+    "bytes": 276084
+  },
+  "callisto": {
+    "path": "/public/textures/moons/callisto.jpg",
+    "colorSpace": "srgb",
+    "ext": "jpg",
+    "bytes": 393543
+  },
+  "titan": {
+    "path": "/public/textures/moons/titan.jpg",
+    "colorSpace": "srgb",
+    "ext": "jpg",
+    "bytes": 57728
+  },
+  "rhea": {
+    "path": "/public/textures/moons/rhea.jpg",
+    "colorSpace": "srgb",
+    "ext": "jpg",
+    "bytes": 233900
+  },
+  "dione": {
+    "path": "/public/textures/moons/dione.jpg",
+    "colorSpace": "srgb",
+    "ext": "jpg",
+    "bytes": 243031
+  },
+  "tethys": {
+    "path": "/public/textures/moons/tethys.jpg",
+    "colorSpace": "srgb",
+    "ext": "jpg",
+    "bytes": 248878
+  },
+  "enceladus": {
+    "path": "/public/textures/moons/enceladus.jpg",
+    "colorSpace": "srgb",
+    "ext": "jpg",
+    "bytes": 211855
+  },
+  "iapetus": {
+    "path": "/public/textures/moons/iapetus.jpg",
+    "colorSpace": "srgb",
+    "ext": "jpg",
+    "bytes": 195096
+  },
+  "triton": {
+    "path": "/public/textures/moons/triton.jpg",
+    "colorSpace": "srgb",
+    "ext": "jpg",
+    "bytes": 91964
+  },
+  "charon": {
+    "path": "/public/textures/moons/charon.jpg",
+    "colorSpace": "srgb",
+    "ext": "jpg",
+    "bytes": 95136
+  },
+  "mimas": {
+    "path": "/public/textures/moons/mimas.jpg",
+    "colorSpace": "srgb",
+    "ext": "jpg",
+    "bytes": 99350
+  },
+  "phobos": {
+    "path": "/public/textures/moons/phobos.jpg",
+    "colorSpace": "srgb",
+    "ext": "jpg",
+    "bytes": 44630
+  },
+  "deimos": {
+    "path": "/public/textures/moons/deimos.jpg",
+    "colorSpace": "srgb",
+    "ext": "jpg",
+    "bytes": 17003
+  },
+  "miranda": {
+    "path": "/public/textures/moons/miranda.jpg",
+    "colorSpace": "srgb",
+    "ext": "jpg",
+    "bytes": 29125
+  },
+  "ariel": {
+    "path": "/public/textures/moons/ariel.jpg",
+    "colorSpace": "srgb",
+    "ext": "jpg",
+    "bytes": 34382
+  },
+  "umbriel": {
+    "path": "/public/textures/moons/umbriel.jpg",
+    "colorSpace": "srgb",
+    "ext": "jpg",
+    "bytes": 31498
+  },
+  "titania": {
+    "path": "/public/textures/moons/titania.jpg",
+    "colorSpace": "srgb",
+    "ext": "jpg",
+    "bytes": 40320
+  },
+  "oberon": {
+    "path": "/public/textures/moons/oberon.jpg",
+    "colorSpace": "srgb",
+    "ext": "jpg",
+    "bytes": 31105
+  },
+  "amalthea": {
+    "path": "/public/textures/moons/amalthea.jpg",
+    "colorSpace": "srgb",
+    "ext": "jpg",
+    "bytes": 31432
+  },
+  "proteus": {
+    "path": "/public/textures/moons/proteus.jpg",
+    "colorSpace": "srgb",
+    "ext": "jpg",
+    "bytes": 32431
+  },
+  "sun": {
+    "path": "/public/textures/sun/sun.jpg",
+    "colorSpace": "linear",
+    "ext": "jpg",
+    "bytes": 55318
+  }
+}
