@@ -1,0 +1,11 @@
+:root {
+  --bg: #02030a;
+  --ink: #ece8df;
+  --dim: rgba(236, 232, 223, 0.55);
+  --panel: rgba(10, 12, 22, 0.74);
+  --line: rgba(236, 232, 223, 0.15);
+  --accent: #f4b860;
+  --font-family: 'Bricolage Grotesque', 'Helvetica Neue', Arial, sans-serif;
+  --font-serif: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif;
+  color-scheme: dark;
+}

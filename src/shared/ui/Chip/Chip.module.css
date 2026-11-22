@@ -1,0 +1,29 @@
+.chip {
+  flex: none;
+  padding: 7px 13px;
+  font-size: 13px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+  color: var(--ink);
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  user-select: none;
+}
+
+.chip:hover {
+  background: rgba(236, 232, 223, 0.1);
+}
+
+.chip.small {
+  font-size: 12px;
+  padding: 5px 11px;
+}
+
+.chip.active {
+  background: var(--accent);
+  color: #1a1205;
+  border-color: transparent;
+  font-weight: 600;
+}

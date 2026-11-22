@@ -1,0 +1,52 @@
+.card {
+  pointer-events: auto;
+  align-self: flex-start;
+  max-width: min(440px, 100%);
+  box-sizing: border-box;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 12px 14px;
+  backdrop-filter: blur(12px);
+  color: var(--ink);
+}
+
+.title {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.note {
+  margin: 4px 0 0;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--dim);
+}
+
+.facts {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 3px 14px;
+  font-size: 12.5px;
+  margin: 9px 0 0;
+}
+
+.factLabel {
+  color: var(--dim);
+}
+
+.factValue {
+  margin: 0;
+  color: var(--ink);
+}
+
+.small {
+  display: block;
+  margin-top: 9px;
+  font-size: 10.5px;
+  color: var(--dim);
+  opacity: 0.7;
+  font-style: italic;
+}

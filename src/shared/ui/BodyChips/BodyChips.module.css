@@ -1,0 +1,12 @@
+.row {
+  pointer-events: auto;
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding: 2px;
+}
+
+.row::-webkit-scrollbar {
+  display: none;
+}
