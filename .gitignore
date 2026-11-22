@@ -1,0 +1,13 @@
+node_modules/
+dist/
+graphify-out/
+legacy/
+.env*
+*.log
+.DS_Store
+
+# Root legacy source copies kept locally
+Gargantua black hole.html
+Solar bodies.html
+Solar System.html
+The Sun, collapsed (Gargantua).html
