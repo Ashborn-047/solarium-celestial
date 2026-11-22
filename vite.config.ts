@@ -12,13 +12,19 @@ export default defineConfig({
   },
   build: {
     target: 'es2020',
+    cssCodeSplit: true,
     rollupOptions: {
       output: {
         manualChunks(id: string) {
           if (id.includes('node_modules/three')) {
             return 'three';
           }
-          if (id.includes('node_modules/react/') || id.includes('node_modules/react-dom/')) {
+          if (
+            id.includes('node_modules/react') ||
+            id.includes('node_modules/react-dom') ||
+            id.includes('node_modules/react-router') ||
+            id.includes('node_modules/@remix-run')
+          ) {
             return 'react';
           }
         },
