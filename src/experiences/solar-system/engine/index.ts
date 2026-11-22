@@ -61,6 +61,7 @@ export class SolarSystemEngine implements Engine {
         color: 0xffaa44,
         transparent: true,
         blending: THREE.AdditiveBlending,
+        depthWrite: false,
       })
     );
     glowSprite.scale.set(22, 22, 1);

@@ -13,7 +13,7 @@ export const SolarSystemExperience: React.FC = () => {
   const [primaryNodes, setPrimaryNodes] = useState<SystemNode[]>([]);
   const [labels, setLabels] = useState<LabelItem[]>([]);
   const [paused, setPaused] = useState(false);
-  const [speedMultiplier, setSpeedMultiplier] = useState(10);
+  const [speedMultiplier, setSpeedMultiplier] = useState(1);
   const [collapsed, setCollapsed] = useState(false);
   const [shadowsEnabled, setShadowsEnabled] = useState(true);
 
@@ -62,12 +62,15 @@ export const SolarSystemExperience: React.FC = () => {
     }
   }, [engineRef]);
 
-  const handleStepSpeed = useCallback(() => {
-    if (engineRef.current) {
-      const speed = engineRef.current.time.stepSpeed();
-      setSpeedMultiplier(speed);
-    }
-  }, [engineRef]);
+  const handleStepSpeed = useCallback(
+    (delta = 1) => {
+      if (engineRef.current) {
+        const speed = engineRef.current.time.stepSpeed(delta);
+        setSpeedMultiplier(speed);
+      }
+    },
+    [engineRef]
+  );
 
   const handleToggleCollapse = useCallback(() => {
     if (engineRef.current) {

@@ -15,7 +15,7 @@ interface SystemHudProps {
   collapsed: boolean;
   shadowsEnabled: boolean;
   onTogglePause: () => void;
-  onStepSpeed: () => void;
+  onStepSpeed: (delta?: number) => void;
   onToggleCollapse: () => void;
   onDiveToSun: () => void;
   onSelectNode: (node: SystemNode | null) => void;

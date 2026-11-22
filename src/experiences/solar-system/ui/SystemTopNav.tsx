@@ -1,6 +1,19 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Play, Pause, FastForward, Flame, Undo, ZoomIn, ArrowLeft, Globe2, CircleDot, Sun, Moon } from 'lucide-react';
+import {
+  Play,
+  Pause,
+  Plus,
+  Minus,
+  Flame,
+  Undo,
+  ZoomIn,
+  ArrowLeft,
+  Globe2,
+  CircleDot,
+  Sun,
+  Moon,
+} from 'lucide-react';
 import styles from './SystemTopNav.module.css';
 
 interface SystemTopNavProps {
@@ -13,7 +26,7 @@ interface SystemTopNavProps {
   onToggleCollapse: () => void;
   onDiveToSun: () => void;
   onTogglePause: () => void;
-  onStepSpeed: () => void;
+  onStepSpeed: (delta?: number) => void;
   onToggleShadows: () => void;
 }
 
@@ -74,13 +87,31 @@ export const SystemTopNav: React.FC<SystemTopNavProps> = ({
           <ZoomIn size={14} />
           <span>Dive</span>
         </button>
-        <button className={styles.speedBtn} onClick={onTogglePause} title={paused ? 'Resume' : 'Pause'}>
-          {paused ? <Play size={14} /> : <Pause size={14} />}
-          <span>{paused ? 'Paused' : `${speedMultiplier}d/s`}</span>
-        </button>
-        <button className={styles.speedBtn} onClick={onStepSpeed} title="Cycle Speed">
-          <FastForward size={14} />
-        </button>
+
+        <div className={styles.speedControlGroup}>
+          <button
+            className={styles.speedSubBtn}
+            onClick={() => onStepSpeed(-1)}
+            title="Slower simulation speed"
+          >
+            <Minus size={13} />
+          </button>
+          <button
+            className={styles.speedInnerBtn}
+            onClick={onTogglePause}
+            title={paused ? 'Resume simulation' : 'Pause simulation'}
+          >
+            {paused ? <Play size={13} /> : <Pause size={13} />}
+            <span>{paused ? 'Paused' : `${speedMultiplier}d/s`}</span>
+          </button>
+          <button
+            className={styles.speedSubBtn}
+            onClick={() => onStepSpeed(1)}
+            title="Faster simulation speed"
+          >
+            <Plus size={13} />
+          </button>
+        </div>
       </div>
     </div>
   );

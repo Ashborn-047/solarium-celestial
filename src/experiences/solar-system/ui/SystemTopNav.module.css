@@ -107,3 +107,46 @@
 .collapseBtn:hover {
   background: #f7c67c;
 }
+
+.speedControlGroup {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  background: var(--color-panel);
+  border: 1px solid var(--color-line);
+  border-radius: 999px;
+  padding: 2px 4px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.speedInnerBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  border: none;
+  color: var(--color-ink);
+  padding: 4px 8px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.speedSubBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  background: transparent;
+  border: none;
+  color: var(--color-dim);
+  cursor: pointer;
+  transition: color 0.15s, background-color 0.15s;
+}
+
+.speedSubBtn:hover {
+  color: var(--color-ink);
+  background: var(--color-panel-hover);
+}
