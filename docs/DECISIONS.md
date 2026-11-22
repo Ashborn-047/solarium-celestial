@@ -14,3 +14,14 @@ Architectural and implementation decisions made during the build.
 | D6 | Playwright with SwiftShader for parity screenshots | `--use-angle=swiftshader --enable-unsafe-swiftshader` flags enable headless WebGL. No pixel-perfect match required; logged differences only. |
 | D7 | `?freeze=1` URL parameter freezes `clock.elapsedTime` at 0 | Enables deterministic screenshots. Checked via `URLSearchParams` in render loop. |
 | D8 | Deploy target is Vercel with SPA rewrites | `vercel.json` with `"rewrites": [{"source":"/(.*)", "destination":"/index.html"}]`. |
+
+## Phase 6 & Build Architecture
+
+| # | Decision | Rationale |
+|---|---|---|
+| D9 | Unified Sun Surface (`surface.glsl`) with spotFactor parameter | Inspector passes texture-derived spot values (`smoothstep(0.8, 0.25, l)`); raymarch passes procedural FBM spot values (`smoothstep(0.6, 0.72, fbm(...))`). Zero visual discrepancy when transition begins. |
+| D10 | Analytical Bounding-Sphere Ray Entry | In solar-system composite mode, ray-sphere intersection with $R_{\text{bound}} = 10.0$ analytically computes ray entry distance $t_0$, bypassing empty vacuum integration across 150 scene units and preventing step budget exhaustion. |
+| D11 | Depth-Texture Occlusion for Foreground Bodies | Scene HDR render target attaches a depth texture (`THREE.DepthTexture`). Any planet closer to the camera than $t_0$ passes unlensed; only background geometry behind the black hole is gravitationally deflected. |
+| D12 | Inline Textures in Standalone Single Build Only | Rollup transform plugin in `vite.single.config.ts` converts texture paths directly into base64 data URIs only when building `build:single`, keeping standalone HTML files strictly under 16 MB and fully functional via `file://`. |
+| D13 | Light-Delay Shockwave and Planet Dimming | Expanding light shockwave expands at $c$ from the Sun; as it passes each planet's orbit, sunlight multiplier transitions down to 5% (0.05). |
+| D14 | Camera Dive Handoff at Distance 30 | When camera approaches the Sun to distance 30, the system seamlessly transitions between `/solar-system` and `/black-hole` preserving identical yaw, pitch, and distance. |

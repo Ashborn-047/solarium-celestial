@@ -63,3 +63,15 @@ All notable changes to this project are documented here.
 - Automated single-bundle builds with `inlineDynamicImports` in `scripts/build-single.mjs`
 - Verified file size compliance: `black-hole.html` (0.82 MB), `solar-system.html` (8.27 MB), and `bodies.html` (8.25 MB) — all strictly under the 16 MB limit
 - Automated headless browser tests confirming that all three standalone files open and render cleanly via `file://` URIs with zero network requests
+
+
+## Phase 6 — Collapse the Sun Feature
+
+- Unified Sun surface shader (`src/bodies/sun/surface.glsl`) parameterized by `spotFactor`, shared seamlessly between Inspector (map-derived sunspots), Solar System overview, and relativistic raymarch
+- Implemented `CollapseTimeline` with continuous forward/backward timeline math and 3 narrative phases (A stable star, Collapsing, A black hole)
+- Integrated standalone `/black-hole` interactive controls: Collapse/Restore toggle, Dive in / Pull back camera transition, and Glow disk artistic toggle
+- Built Solar System composite pipeline (`SolarCollapseComposite` & `SolarCollapseManager`):
+  - Analytical ray-sphere bounding intersection at $R_{\text{bound}} = 10.0$ to bypass empty vacuum integration and preserve step budget
+  - Depth-texture occlusion ensuring foreground planets remain unlensed while background objects are warped
+  - Dynamic light-delay shockwave ring expanding outward at speed $c$, dimming planetary sunlight to 5%
+  - Smooth camera dive hand-off to `/black-hole` at distance 30 (with bidirectional transition support)

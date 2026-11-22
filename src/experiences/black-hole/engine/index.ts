@@ -7,6 +7,7 @@ import { RenderLoop } from '../../../shared/three/render-loop';
 import { OrbitControls } from '../../../shared/three/orbit-controls';
 import { BlackHoleCameraRig } from './camera';
 import { createBlackHolePost } from './post';
+import { CollapseTimeline, STORY_PHASES } from '../../../bodies/sun/collapse';
 import vertexShader from '../shaders/vertex.glsl';
 import fragmentShader from '../shaders/fragment.glsl';
 
@@ -23,6 +24,11 @@ export class BlackHoleEngine implements Engine {
   private resizeHandler = new WindowResizeHandler();
   private uniforms: Record<string, { value: unknown }> = {};
   private quad: THREE.Mesh | null = null;
+  private isDiving = false;
+  private currentPhase = -1;
+
+  readonly timeline = new CollapseTimeline();
+  onPhaseChange?: (phase: number, title: string, desc: string) => void;
 
   public mount(canvas: HTMLCanvasElement): void {
     this.renderer = createRenderer(canvas, {
@@ -44,9 +50,9 @@ export class BlackHoleEngine implements Engine {
       uAspect: { value: window.innerWidth / window.innerHeight },
       uTan: { value: Math.tan(THREE.MathUtils.degToRad(FOV / 2)) },
       uTime: { value: 0 },
-      uR: { value: 1.0 },
+      uR: { value: 6.0 },
       uHeat: { value: 1.0 },
-      uDisk: { value: 1.0 },
+      uDisk: { value: 0.0 },
       uROUT: { value: 15.0 },
     };
 
@@ -83,8 +89,21 @@ export class BlackHoleEngine implements Engine {
     this.loop.addCallback((dt) => {
       if (!this.controls || !this.composer) return;
       (this.uniforms.uTime.value as number) += dt;
-      this.controls.update(dt);
 
+      this.timeline.update(dt, {
+        uR: this.uniforms.uR as { value: number },
+        uHeat: this.uniforms.uHeat as { value: number },
+        uDisk: this.uniforms.uDisk as { value: number },
+        uROUT: this.uniforms.uROUT as { value: number },
+      });
+
+      if (this.timeline.state.phase !== this.currentPhase) {
+        this.currentPhase = this.timeline.state.phase;
+        const info = STORY_PHASES[this.currentPhase];
+        this.onPhaseChange?.(this.currentPhase, info.title, info.description);
+      }
+
+      this.controls.update(dt);
       const { dist, pitch, yaw } = this.controls.state;
       this.rig.update(dist, pitch, yaw);
 
@@ -99,10 +118,23 @@ export class BlackHoleEngine implements Engine {
     this.loop.start();
   }
 
-  public setCollapseUniforms(r: number, heat: number, disk: number): void {
-    if (this.uniforms.uR) this.uniforms.uR.value = r;
-    if (this.uniforms.uHeat) this.uniforms.uHeat.value = heat;
-    if (this.uniforms.uDisk) this.uniforms.uDisk.value = disk;
+  public toggleCollapse(): boolean {
+    this.timeline.state.collapsed = !this.timeline.state.collapsed;
+    return this.timeline.state.collapsed;
+  }
+
+  public toggleDive(): boolean {
+    this.isDiving = !this.isDiving;
+    if (this.controls) {
+      this.controls.state.targetDist = this.isDiving ? 13 : 30;
+      this.controls.state.pitch = this.isDiving ? 0.1 : 0.09;
+    }
+    return this.isDiving;
+  }
+
+  public toggleGlowDisk(): boolean {
+    this.timeline.state.showDisk = !this.timeline.state.showDisk;
+    return this.timeline.state.showDisk;
   }
 
   public getControls(): OrbitControls | null {

@@ -7,22 +7,15 @@ uniform float uR, uHeat, uDisk, uROUT;
 
 const float RIN = 3.0; // innermost stable orbit (Rs = 1)
 
-#include ../../../shared/shaders/chunks/noise.glsl
+#include ../../../bodies/sun/surface.glsl
 #include ../../../shared/shaders/chunks/tonemap.glsl
 #include ../../../shared/shaders/chunks/stars.glsl
 
 vec3 sunSurf(vec3 hp, vec3 vel) {
   vec3 p = normalize(hp), v = -normalize(vel);
   float gn = clamp((1.0 - 1.0 / uR) / 0.8333, 0.0, 1.25);
-  float gr = fbm(p * 14.0 + vec3(0.0, 0.0, uTime * 0.25));
-  float cl = fbm(p * 5.0 + vec3(uTime * 0.03, 0.0, uTime * 0.05));
   float sp = smoothstep(0.6, 0.72, fbm(p * 2.6 + 3.1 + vec3(0.0, uTime * 0.02, 0.0)));
-  float heat = 0.55 + 0.75 * gr + 0.4 * cl;
-  vec3 c = mix(vec3(1.0, 0.36, 0.04), vec3(1.0, 0.86, 0.5), clamp(heat - 0.4, 0.0, 1.0)) * (0.5 + 0.7 * heat);
-  c *= 1.0 - 0.8 * sp;
-  c *= 0.3 + 0.7 * pow(max(dot(p, v), 0.0), 0.5); // limb darkening
-  c = mix(c, vec3(1.0, 0.92, 0.82) * dot(c, vec3(0.33)), clamp(uHeat - 1.0, 0.0, 1.0) * 0.7);
-  return c * 1.5 * uHeat * gn * gn;
+  return computeSunSurface(p, v, sp, uTime, uHeat, gn);
 }
 
 void main() {

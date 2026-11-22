@@ -1,4 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useEngineInstance } from '../../shared/three/use-engine';
 import { SolarSystemEngine } from './engine';
 import { SystemNode } from './engine/system-builder';
@@ -6,12 +7,14 @@ import { LabelItem } from './engine/labels';
 import { SystemHud } from './ui/SystemHud';
 
 export const SolarSystemExperience: React.FC = () => {
+  const navigate = useNavigate();
   const [focusedNode, setFocusedNode] = useState<SystemNode | null>(null);
   const [selectedRelNode, setSelectedRelNode] = useState<SystemNode | null>(null);
   const [primaryNodes, setPrimaryNodes] = useState<SystemNode[]>([]);
   const [labels, setLabels] = useState<LabelItem[]>([]);
   const [paused, setPaused] = useState(false);
   const [speedMultiplier, setSpeedMultiplier] = useState(10);
+  const [collapsed, setCollapsed] = useState(false);
 
   const { canvasRef, engineRef } = useEngineInstance(() => {
     const engine = new SolarSystemEngine();
@@ -24,6 +27,9 @@ export const SolarSystemExperience: React.FC = () => {
       const rel = node && node !== sun ? (!node.parent || node.parent === sun ? node : node.parent) : null;
       setSelectedRelNode(rel);
     };
+    engine.onDiveReady = () => {
+      navigate('/black-hole?collapse=1');
+    };
     return engine;
   });
 
@@ -32,6 +38,11 @@ export const SolarSystemExperience: React.FC = () => {
       const sun = engineRef.current.getSunNode();
       if (sun) {
         setPrimaryNodes([sun, ...sun.children]);
+      }
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('collapse') === '1') {
+        engineRef.current.collapseManager.triggerCollapse();
+        setCollapsed(true);
       }
     }
   }, [engineRef]);
@@ -57,6 +68,28 @@ export const SolarSystemExperience: React.FC = () => {
     }
   }, [engineRef]);
 
+  const handleToggleCollapse = useCallback(() => {
+    if (engineRef.current) {
+      if (collapsed) {
+        engineRef.current.collapseManager.restore();
+        setCollapsed(false);
+      } else {
+        engineRef.current.collapseManager.triggerCollapse();
+        setCollapsed(true);
+      }
+    }
+  }, [engineRef, collapsed]);
+
+  const handleDiveToSun = useCallback(() => {
+    if (engineRef.current) {
+      const sun = engineRef.current.getSunNode();
+      if (sun) {
+        engineRef.current.setFocus(sun);
+        engineRef.current.cameraRig.tDist = 30;
+      }
+    }
+  }, [engineRef]);
+
   return (
     <>
       <canvas ref={canvasRef} />
@@ -67,8 +100,11 @@ export const SolarSystemExperience: React.FC = () => {
         labels={labels}
         paused={paused}
         speedMultiplier={speedMultiplier}
+        collapsed={collapsed}
         onTogglePause={handleTogglePause}
         onStepSpeed={handleStepSpeed}
+        onToggleCollapse={handleToggleCollapse}
+        onDiveToSun={handleDiveToSun}
         onSelectNode={handleSelectNode}
       />
     </>

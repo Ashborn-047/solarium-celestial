@@ -1,5 +1,5 @@
 import React from 'react';
-import { Play, Pause, FastForward } from 'lucide-react';
+import { Play, Pause, FastForward, Flame, Undo, ZoomIn } from 'lucide-react';
 import { Chip } from '../../../shared/ui/Chip';
 import { SystemNode } from '../engine/system-builder';
 import { LabelItem } from '../engine/labels';
@@ -12,8 +12,11 @@ interface SystemHudProps {
   labels: LabelItem[];
   paused: boolean;
   speedMultiplier: number;
+  collapsed: boolean;
   onTogglePause: () => void;
   onStepSpeed: () => void;
+  onToggleCollapse: () => void;
+  onDiveToSun: () => void;
   onSelectNode: (node: SystemNode | null) => void;
 }
 
@@ -24,8 +27,11 @@ export const SystemHud: React.FC<SystemHudProps> = ({
   labels,
   paused,
   speedMultiplier,
+  collapsed,
   onTogglePause,
   onStepSpeed,
+  onToggleCollapse,
+  onDiveToSun,
   onSelectNode,
 }) => {
   const currentData = focusedNode?.data;
@@ -39,6 +45,14 @@ export const SystemHud: React.FC<SystemHudProps> = ({
           <span className={styles.subtitle}>Eight planets, 24 moons, real orbital periods.</span>
         </div>
         <div className={styles.controls}>
+          <button className={styles.collapseBtn} onClick={onToggleCollapse}>
+            {collapsed ? <Undo size={14} /> : <Flame size={14} />}
+            <span>{collapsed ? 'Restore Sun' : 'Collapse Sun'}</span>
+          </button>
+          <button className={styles.speedBtn} onClick={onDiveToSun} title="Dive toward Sun">
+            <ZoomIn size={14} />
+            <span>Dive</span>
+          </button>
           <button className={styles.speedBtn} onClick={onTogglePause} title={paused ? 'Resume' : 'Pause'}>
             {paused ? <Play size={14} /> : <Pause size={14} />}
             <span>{paused ? 'Paused' : `${speedMultiplier}d/s`}</span>

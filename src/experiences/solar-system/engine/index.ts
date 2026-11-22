@@ -10,6 +10,7 @@ import { SolarCameraRig } from './camera-rig';
 import { buildSolarSystemTree, SystemNode } from './system-builder';
 import { computeVisibleLabels, LabelItem } from './labels';
 import { makeGlowTexture } from '../../../bodies/procedural';
+import { SolarCollapseManager } from './collapse-manager';
 
 export class SolarSystemEngine implements Engine {
   private renderer: THREE.WebGLRenderer | null = null;
@@ -25,8 +26,11 @@ export class SolarSystemEngine implements Engine {
 
   readonly time = new TimeController();
   readonly cameraRig = new SolarCameraRig();
+  readonly collapseManager = new SolarCollapseManager();
+
   onLabelsUpdate?: (labels: LabelItem[]) => void;
   onFocusChange?: (node: SystemNode | null) => void;
+  onDiveReady?: (yaw: number, pitch: number, dist: number) => void;
 
   mount(canvas: HTMLCanvasElement): void {
     this.isFrozen = new URLSearchParams(window.location.search).get('freeze') === '1';
@@ -63,6 +67,7 @@ export class SolarSystemEngine implements Engine {
     this.nodes = nodes;
     this.sunNode = sunNode;
 
+    this.collapseManager.init(window.innerWidth, window.innerHeight, this.sysGroup);
     this.cameraRig.attach(canvas);
     this.cameraRig.setFocus(null, this.camera.aspect);
 
@@ -74,6 +79,7 @@ export class SolarSystemEngine implements Engine {
   private onResize = (): void => {
     if (!this.renderer || !this.camera) return;
     handleResize(this.camera, this.renderer);
+    this.collapseManager.setSize(window.innerWidth, window.innerHeight);
     if (!this.cameraRig.focus) {
       this.cameraRig.tDist = this.cameraRig.ovDist(this.camera.aspect);
     }
@@ -83,14 +89,6 @@ export class SolarSystemEngine implements Engine {
     if (!this.camera) return;
     this.cameraRig.setFocus(node, this.camera.aspect);
     this.onFocusChange?.(node);
-  }
-
-  findNode(id: string): SystemNode | undefined {
-    return this.nodes.find((n) => n.data.id === id);
-  }
-
-  getNodes(): SystemNode[] {
-    return this.nodes;
   }
 
   getSunNode(): SystemNode | null {
@@ -123,8 +121,13 @@ export class SolarSystemEngine implements Engine {
       }
     }
 
+    this.collapseManager.update(dt, this.nodes);
     this.scene.updateMatrixWorld();
     this.cameraRig.update(dt, this.camera);
+
+    if (this.cameraRig.focus === this.sunNode && this.cameraRig.dist <= 30.5) {
+      this.onDiveReady?.(this.cameraRig.yaw, this.cameraRig.pitch, 30);
+    }
 
     if (this.onLabelsUpdate) {
       const labels = computeVisibleLabels(
@@ -138,13 +141,17 @@ export class SolarSystemEngine implements Engine {
       this.onLabelsUpdate(labels);
     }
 
-    this.renderer.render(this.scene, this.camera);
+    const handled = this.collapseManager.render(this.renderer, this.scene, this.camera);
+    if (!handled) {
+      this.renderer.render(this.scene, this.camera);
+    }
   };
 
   dispose(): void {
     cancelAnimationFrame(this.animId);
     window.removeEventListener('resize', this.onResize);
     this.cameraRig.detach();
+    this.collapseManager.dispose();
     if (this.scene) disposeObject(this.scene);
     this.renderer?.dispose();
     this.renderer = null;

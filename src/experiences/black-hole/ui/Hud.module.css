@@ -6,28 +6,115 @@
   z-index: 10;
 }
 
-.hud {
+.top {
   position: fixed;
-  left: 28px;
-  bottom: calc(26px + env(safe-area-inset-bottom, 0px));
+  top: calc(14px + env(safe-area-inset-top, 0px));
+  left: 16px;
+  right: 16px;
   pointer-events: none;
-  color: var(--ink);
-  font-family: var(--font-serif);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
   z-index: 20;
 }
 
-.title {
-  margin: 0 0 4px;
-  font-size: 22px;
-  font-weight: 400;
-  letter-spacing: 0.04em;
+.titleArea {
+  display: flex;
+  flex-direction: column;
 }
 
-.subtitle {
+.title {
   margin: 0;
-  font-size: 13px;
-  color: var(--dim);
-  font-style: italic;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--color-ink);
+}
+
+.card {
+  pointer-events: auto;
+  max-width: 360px;
+  background: var(--color-panel);
+  border: 1px solid var(--color-line);
+  border-radius: 14px;
+  padding: 12px 14px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.cardTitle {
+  margin: 0 0 4px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-ink);
+}
+
+.cardDesc {
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.45;
+  color: var(--color-dim);
+}
+
+.cardNote {
+  display: block;
+  margin-top: 6px;
+  font-size: 10.5px;
+  color: var(--color-dim);
+  opacity: 0.75;
+}
+
+.dock {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 0 12px calc(14px + env(safe-area-inset-bottom, 0px));
+  pointer-events: none;
+  z-index: 20;
+}
+
+.dockBtn {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--color-ink);
+  background: var(--color-panel);
+  border: 1px solid var(--color-line);
+  border-radius: 999px;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: background-color 0.15s, border-color 0.15s;
+}
+
+.dockBtn:hover:not(:disabled) {
+  background: var(--color-panel-hover);
+  border-color: var(--color-line-hover);
+}
+
+.collapseBtn {
+  composes: dockBtn;
+  background: var(--color-accent);
+  color: #1a1205;
+  border-color: transparent;
+  font-weight: 600;
+}
+
+.collapseBtn:hover {
+  background: #f7c67c;
+}
+
+.dockBtn:disabled {
+  opacity: 0.35;
+  cursor: default;
 }
 
 .fade {
@@ -41,11 +128,4 @@
 
 .fadedOut {
   opacity: 0;
-}
-
-@media (max-width: 600px) {
-  .hud {
-    left: 18px;
-    bottom: 18px;
-  }
 }
