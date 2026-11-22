@@ -1,0 +1,109 @@
+.top {
+  position: fixed;
+  top: calc(12px + env(safe-area-inset-top, 0px));
+  left: 16px;
+  right: 16px;
+  pointer-events: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  z-index: 10;
+}
+
+.titleArea {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.navRow {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 2px;
+}
+
+.navLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  background: var(--color-panel);
+  border: 1px solid var(--color-line);
+  color: var(--color-dim);
+  border-radius: 999px;
+  font-size: 11.5px;
+  font-weight: 500;
+  text-decoration: none;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.navLink:hover {
+  color: var(--color-ink);
+  border-color: var(--color-line-hover);
+}
+
+.inspectBtn {
+  composes: navLink;
+  background: rgba(235, 174, 94, 0.15);
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+  font-weight: 600;
+}
+
+.inspectBtn:hover {
+  background: var(--color-accent);
+  color: #1a1205;
+}
+
+.title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--color-ink);
+}
+
+.subtitle {
+  font-size: 12px;
+  color: var(--color-dim);
+}
+
+.controls {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.speedBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--color-panel);
+  border: 1px solid var(--color-line);
+  color: var(--color-ink);
+  padding: 6px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 13px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.collapseBtn {
+  composes: speedBtn;
+  background: var(--color-accent);
+  color: #1a1205;
+  border-color: transparent;
+  font-weight: 600;
+}
+
+.collapseBtn:hover {
+  background: #f7c67c;
+}

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useEngineInstance } from '../../shared/three/use-engine';
 import { BodiesEngine } from './engine';
 import { InspectorHud } from './ui/InspectorHud';
@@ -6,10 +7,32 @@ import { INSPECTOR_BODIES } from '../../bodies';
 import { BodyData } from '../../shared/types/body';
 
 export const BodiesExperience: React.FC = () => {
-  const primaryBodies = useMemo(() => INSPECTOR_BODIES.map((b) => b.data), []);
-  const defaultBody = useMemo(() => primaryBodies.find((b) => b.id === 'earth') || primaryBodies[0], [primaryBodies]);
+  const [searchParams] = useSearchParams();
+  const requestedId = searchParams.get('id');
 
-  const [selectedPrimary, setSelectedPrimary] = useState<BodyData>(defaultBody);
+  const primaryBodies = useMemo(() => INSPECTOR_BODIES.map((b) => b.data), []);
+
+  const defaultBody = useMemo(() => {
+    if (requestedId) {
+      for (const p of primaryBodies) {
+        if (p.id === requestedId) return p;
+        if (p.children) {
+          const found = p.children.find((c) => c.id === requestedId);
+          if (found) return found;
+        }
+      }
+    }
+    return primaryBodies.find((b) => b.id === 'earth') || primaryBodies[0];
+  }, [primaryBodies, requestedId]);
+
+  const defaultPrimary = useMemo(() => {
+    if (defaultBody.parentId) {
+      return primaryBodies.find((b) => b.id === defaultBody.parentId) || defaultBody;
+    }
+    return defaultBody;
+  }, [primaryBodies, defaultBody]);
+
+  const [selectedPrimary, setSelectedPrimary] = useState<BodyData>(defaultPrimary);
   const [currentBody, setCurrentBody] = useState<BodyData>(defaultBody);
   const [loading, setLoading] = useState(false);
   const [loadingName, setLoadingName] = useState(defaultBody.name);

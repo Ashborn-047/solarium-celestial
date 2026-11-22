@@ -1,0 +1,87 @@
+.heroCard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+  background: linear-gradient(135deg, rgba(235, 174, 94, 0.12) 0%, rgba(20, 20, 22, 0.85) 100%);
+  border: 1px solid rgba(235, 174, 94, 0.35);
+  border-radius: 18px;
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.heroCard:hover {
+  transform: translateY(-3px);
+  border-color: var(--color-accent);
+  box-shadow: 0 10px 28px rgba(235, 174, 94, 0.15);
+}
+
+.heroBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  align-self: flex-start;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: rgba(235, 174, 94, 0.2);
+  color: var(--color-accent);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  margin-bottom: 14px;
+}
+
+.heroBody {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.heroIcon {
+  width: 54px;
+  height: 54px;
+  border-radius: 14px;
+  background: rgba(235, 174, 94, 0.2);
+  border: 1px solid rgba(235, 174, 94, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-accent);
+  flex-shrink: 0;
+}
+
+.heroText {
+  flex: 1;
+  min-width: 240px;
+}
+
+.heroTitle {
+  font-size: 22px;
+  font-weight: 700;
+  margin: 0 0 4px;
+  color: var(--color-ink);
+}
+
+.heroDesc {
+  font-size: 13.5px;
+  line-height: 1.45;
+  color: var(--color-dim);
+  margin: 0;
+}
+
+.heroAction {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 16px;
+  border-radius: 999px;
+  background: var(--color-accent);
+  color: #1a1205;
+  font-weight: 600;
+  font-size: 13px;
+  flex-shrink: 0;
+}

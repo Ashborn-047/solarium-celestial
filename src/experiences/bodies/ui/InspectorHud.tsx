@@ -1,4 +1,6 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
+import { ArrowLeft } from 'lucide-react';
 import { BodyData } from '../../../shared/types/body';
 import { Chip } from '../../../shared/ui/Chip';
 import styles from './InspectorHud.module.css';
@@ -27,7 +29,13 @@ export const InspectorHud: React.FC<InspectorHudProps> = ({
   return (
     <>
       <div className={styles.top}>
-        <h1 className={styles.title}>Solar bodies</h1>
+        <div className={styles.topNav}>
+          <Link to="/solar-system" className={styles.backBtn} title="Back to Solar System">
+            <ArrowLeft size={14} />
+            <span>Solar System</span>
+          </Link>
+          <h1 className={styles.title}>Solar bodies</h1>
+        </div>
         <span className={styles.hint}>Drag to orbit. Pinch to zoom.</span>
       </div>
 

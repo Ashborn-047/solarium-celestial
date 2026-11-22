@@ -23,6 +23,8 @@ export class SolarSystemEngine implements Engine {
   private animId = 0;
   private lastTime = 0;
   private isFrozen = false;
+  private tempPos = new THREE.Vector3();
+  private tempDir = new THREE.Vector3();
 
   readonly time = new TimeController();
   readonly cameraRig = new SolarCameraRig();
@@ -40,7 +42,7 @@ export class SolarSystemEngine implements Engine {
     this.scene = new THREE.Scene();
     this.camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.05, 6000);
 
-    this.scene.add(new THREE.AmbientLight(0xffffff, 0.1));
+    this.scene.add(new THREE.AmbientLight(0xffffff, 0.25));
     this.scene.add(createSolarStarfield(3000));
 
     this.sysGroup = new THREE.Group();
@@ -63,17 +65,22 @@ export class SolarSystemEngine implements Engine {
     this.belt = createAsteroidBelt(2200);
     this.sysGroup.add(this.belt);
 
-    const { nodes, sunNode } = buildSolarSystemTree(this.sysGroup);
-    this.nodes = nodes;
-    this.sunNode = sunNode;
-
-    this.collapseManager.init(window.innerWidth, window.innerHeight, this.sysGroup);
     this.cameraRig.attach(canvas);
     this.cameraRig.setFocus(null, this.camera.aspect);
 
     window.addEventListener('resize', this.onResize);
     this.lastTime = performance.now();
     this.loop(this.lastTime);
+
+    this.initTree();
+  }
+
+  private async initTree(): Promise<void> {
+    if (!this.sysGroup) return;
+    const { nodes, sunNode } = await buildSolarSystemTree(this.sysGroup);
+    this.nodes = nodes;
+    this.sunNode = sunNode;
+    this.collapseManager.init(window.innerWidth, window.innerHeight, this.sysGroup);
   }
 
   private onResize = (): void => {
@@ -111,6 +118,19 @@ export class SolarSystemEngine implements Engine {
       }
       const s = d.data.spinPeriod || d.data.orbitalPeriod || 1;
       d.mesh.rotation.y = -(Math.PI * 2 * currentDay) / s;
+      if (d.clouds) {
+        d.clouds.rotation.y = -(Math.PI * 2 * currentDay * 1.15) / s;
+      }
+      if (d.sunMat) {
+        d.sunMat.uniforms.t.value = time * 0.001;
+      }
+      if (d.uSun) {
+        d.pivot.getWorldPosition(this.tempPos);
+        this.tempDir.copy(this.tempPos).negate().normalize();
+        this.camera.matrixWorldInverse.copy(this.camera.matrixWorld).invert();
+        this.tempDir.transformDirection(this.camera.matrixWorldInverse);
+        d.uSun.value.copy(this.tempDir);
+      }
     }
 
     this.belt.rotation.y = -currentDay * 0.0004;
