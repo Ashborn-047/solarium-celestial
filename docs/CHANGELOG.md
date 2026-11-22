@@ -75,3 +75,22 @@ All notable changes to this project are documented here.
   - Depth-texture occlusion ensuring foreground planets remain unlensed while background objects are warped
   - Dynamic light-delay shockwave ring expanding outward at speed $c$, dimming planetary sunlight to 5%
   - Smooth camera dive hand-off to `/black-hole` at distance 30 (with bidirectional transition support)
+
+
+## Phase 7 — Solar System Refinement & Free Hover Controls
+
+- Replaced simplified overview meshes with high-fidelity celestial body architectures, textures, and ring geometries.
+- Added dynamic free-flight camera controls (Spacebar toggle, Right-Click drag, and WASD / QE keyboard hover) alongside classic orbit controls.
+- Implemented proximity-based moon discovery: dynamically reveals moon orbits and labels when within 180 units or when focusing parent planets.
+- Fixed Earth cloud opacity rendering by linking alpha-transparent `earth_c.png` with realistic atmospheric glow.
+- Refined Sun limb darkening math in `surface.glsl` and replaced artificial 3D corona shells with soft, natural radial glow sprites.
+- Added realistic planetary shadows toggle and adjustable orbital speed controls (`0.1d/s` to `30d/s`).
+
+
+## Phase 8 — GitHub Pages Deployment & Solarium Celestial Release
+
+- Configured GitHub Actions automated CI/CD pipeline (`.github/workflows/deploy.yml`) with client-side SPA `404.html` routing fallback.
+- Added environment-aware base routing supporting custom domains and GitHub Pages path `/solarium-celestial/`.
+- Updated project documentation, visual badges, architecture diagrams, and control maps in `README.md`.
+- Cleaned up `.gitignore` and registered remote `origin` pointing to `https://github.com/Ashborn-047/solarium-celestial.git`.
+

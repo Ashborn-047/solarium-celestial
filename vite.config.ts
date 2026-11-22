@@ -4,6 +4,7 @@ import glsl from 'vite-plugin-glsl';
 import { fileURLToPath, URL } from 'node:url';
 
 export default defineConfig({
+  base: process.env.GITHUB_PAGES ? '/solarium-celestial/' : '/',
   plugins: [react(), glsl()],
   resolve: {
     alias: {
