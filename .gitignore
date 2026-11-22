@@ -7,6 +7,17 @@ node_modules/
 dist/
 dist-single/
 
+# Local AI agent tooling & rules
+.agents/
+AGENTS.md
+.graphifyignore
+
+# Local git hooks
+.husky/
+
+# Local maintenance & extraction scripts
+scripts/
+
 # Knowledge graph & local caches
 graphify-out/
 legacy/

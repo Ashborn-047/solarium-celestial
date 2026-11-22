@@ -12,7 +12,7 @@
 [![GLSL](https://img.shields.io/badge/GLSL-Shaders-555555?style=for-the-badge&logo=opengl)](https://www.khronos.org/opengl/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
 
-[**Live Application**](https://ashborn-047.github.io/solarium-celestial/) • [**Architecture**](#-system-architecture) • [**Experiences**](#-core-experiences) • [**Controls**](#-controls--navigation) • [**Offline Bundles**](#-offline-distribution)
+[**Live Application**](https://ashborn-047.github.io/solarium-celestial/) • [**Architecture**](#-system-architecture) • [**Experiences**](#-core-experiences) • [**Controls**](#-controls--navigation) • [**Offline Distribution**](#-offline-distribution)
 
 </div>
 
@@ -138,8 +138,7 @@ npm install
 # Start development server
 npm run dev
 
-# Run quality & line checks
-npm run check-lines
+# Run quality checks
 npm run lint
 npm run tsc
 

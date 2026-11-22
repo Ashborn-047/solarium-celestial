@@ -11,12 +11,7 @@
     "lint": "eslint src/",
     "check-lines": "node scripts/check-lines.mjs",
     "build:single": "node scripts/build-single.mjs",
-    "tsc": "tsc --noEmit",
-    "prepare": "husky"
-  },
-  "lint-staged": {
-    "src/**/*.{ts,tsx}": "eslint --fix",
-    "src/**/*.{ts,tsx,css,glsl,json}": "node scripts/check-lines.mjs"
+    "tsc": "tsc --noEmit"
   },
   "keywords": [],
   "author": "",
