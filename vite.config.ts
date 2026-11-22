@@ -13,6 +13,15 @@ export default defineConfig({
   build: {
     target: 'es2020',
     cssCodeSplit: true,
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        passes: 2,
+      },
+      format: {
+        comments: false,
+      },
+    },
     rollupOptions: {
       output: {
         manualChunks(id: string) {
