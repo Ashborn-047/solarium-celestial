@@ -12,7 +12,7 @@
 [![GLSL](https://img.shields.io/badge/GLSL-Shaders-555555?style=for-the-badge&logo=opengl)](https://www.khronos.org/opengl/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
 
-[**Live Application**](https://ashborn-047.github.io/solarium-celestial/) • [**Architecture**](#-system-architecture) • [**Experiences**](#-core-experiences) • [**Controls**](#-controls--navigation) • [**Offline Bundles**](#-offline-distribution) • [**Topics**](#-topics--tags)
+[**Live Application**](https://ashborn-047.github.io/solarium-celestial/) • [**Architecture**](#-system-architecture) • [**Experiences**](#-core-experiences) • [**Controls**](#-controls--navigation) • [**Offline Bundles**](#-offline-distribution)
 
 </div>
 
@@ -163,12 +163,6 @@ Outputs self-contained HTML files in `dist-single/`:
 - `dist-single/black-hole.html`
 
 Double-click to run in any modern web browser without an internet connection or web server!
-
----
-
-## 🏷️ Topics & Tags
-
-`threejs` • `webgl` • `glsl` • `react` • `typescript` • `astronomy` • `solar-system` • `black-hole` • `gravitational-lensing` • `space-simulation` • `vite` • `procedural-generation`
 
 ---
 
