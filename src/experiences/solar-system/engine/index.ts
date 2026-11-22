@@ -76,19 +76,18 @@ export class SolarSystemEngine implements Engine {
     window.addEventListener('resize', this.onResize);
     this.lastTime = performance.now();
     this.loop(this.lastTime);
-
     this.initTree();
   }
 
   toggleShadows(): boolean {
     this.shadowsEnabled = !this.shadowsEnabled;
-    if (this.ambientLight) {
-      this.ambientLight.intensity = this.shadowsEnabled ? 0.25 : 1.35;
-    }
-    if (this.sunLight) {
-      this.sunLight.intensity = this.shadowsEnabled ? 4.0 : 1.0;
-    }
+    if (this.ambientLight) this.ambientLight.intensity = this.shadowsEnabled ? 0.25 : 1.35;
+    if (this.sunLight) this.sunLight.intensity = this.shadowsEnabled ? 4.0 : 1.0;
     return this.shadowsEnabled;
+  }
+
+  toggleHoverMode(): boolean {
+    return this.cameraRig.toggleHoverMode();
   }
 
   private async initTree(): Promise<void> {
@@ -103,9 +102,7 @@ export class SolarSystemEngine implements Engine {
     if (!this.renderer || !this.camera) return;
     handleResize(this.camera, this.renderer);
     this.collapseManager.setSize(window.innerWidth, window.innerHeight);
-    if (!this.cameraRig.focus) {
-      this.cameraRig.tDist = this.cameraRig.ovDist(this.camera.aspect);
-    }
+    if (!this.cameraRig.focus) this.cameraRig.tDist = this.cameraRig.ovDist(this.camera.aspect);
   };
 
   setFocus(node: SystemNode | null): void {
@@ -124,7 +121,6 @@ export class SolarSystemEngine implements Engine {
 
     const dt = this.isFrozen ? 0 : Math.min((time - this.lastTime) / 1000, 0.05);
     this.lastTime = time;
-
     const currentDay = this.isFrozen ? 0 : this.time.update(dt);
 
     for (const d of this.nodes) {
@@ -134,28 +130,24 @@ export class SolarSystemEngine implements Engine {
       }
       const s = d.data.spinPeriod || d.data.orbitalPeriod || 1;
       d.mesh.rotation.y = -(Math.PI * 2 * currentDay) / s;
-      if (d.clouds) {
-        d.clouds.rotation.y = -(Math.PI * 2 * currentDay * 1.15) / s;
-      }
-      if (d.sunMat) {
-        d.sunMat.uniforms.t.value = time * 0.001;
-      }
+      if (d.clouds) d.clouds.rotation.y = -(Math.PI * 2 * currentDay * 1.15) / s;
+      if (d.sunMat) d.sunMat.uniforms.t.value = time * 0.001;
       if (d.uSun) {
         d.pivot.getWorldPosition(this.tempPos);
-        this.tempDir.copy(this.tempPos).negate().normalize();
-        this.tempDir.transformDirection(this.camera.matrixWorldInverse);
+        this.tempDir.copy(this.tempPos).negate().normalize().transformDirection(this.camera.matrixWorldInverse);
         d.uSun.value.copy(this.tempDir);
+      }
+      if (d.line) {
+        if (!d.parent || d.parent === this.sunNode) {
+          d.line.visible = true;
+        } else {
+          d.parent.group.getWorldPosition(this.tempPos);
+          d.line.visible = this.camera.position.distanceTo(this.tempPos) < 220 || d.parent === this.cameraRig.rel;
+        }
       }
     }
 
     this.belt.rotation.y = -currentDay * 0.0004;
-
-    for (const d of this.nodes) {
-      if (d.line) {
-        d.line.visible = !d.parent || d.parent === this.sunNode || d.parent === this.cameraRig.rel;
-      }
-    }
-
     this.collapseManager.update(dt, this.nodes);
     this.scene.updateMatrixWorld();
     this.cameraRig.update(dt, this.camera);
@@ -177,9 +169,7 @@ export class SolarSystemEngine implements Engine {
     }
 
     const handled = this.collapseManager.render(this.renderer, this.scene, this.camera);
-    if (!handled) {
-      this.renderer.render(this.scene, this.camera);
-    }
+    if (!handled) this.renderer.render(this.scene, this.camera);
   };
 
   dispose(): void {

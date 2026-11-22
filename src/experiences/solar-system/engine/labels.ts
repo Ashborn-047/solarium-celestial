@@ -20,6 +20,7 @@ export function computeVisibleLabels(
   height: number
 ): LabelItem[] {
   const v = new THREE.Vector3();
+  const pv = new THREE.Vector3();
   const rects: [number, number, number][] = [];
   const items: LabelItem[] = [];
 
@@ -32,7 +33,16 @@ export function computeVisibleLabels(
     const isSun = node.data.id === 'sun';
     const isPlanet = node.parent === sunNode;
     const isChildOfRel = rel && node.parent === rel;
-    const shouldConsider = node === focus || isSun || isPlanet || isChildOfRel;
+
+    let isNearbyMoon = false;
+    if (node.parent && node.parent !== sunNode) {
+      node.parent.group.getWorldPosition(pv);
+      if (camera.position.distanceTo(pv) < 180) {
+        isNearbyMoon = true;
+      }
+    }
+
+    const shouldConsider = node === focus || isSun || isPlanet || isChildOfRel || isNearbyMoon;
 
     let visible = false;
     let screenX = 0;

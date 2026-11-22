@@ -13,6 +13,7 @@ import {
   CircleDot,
   Sun,
   Moon,
+  Compass,
 } from 'lucide-react';
 import styles from './SystemTopNav.module.css';
 
@@ -21,6 +22,7 @@ interface SystemTopNavProps {
   paused: boolean;
   speedMultiplier: number;
   shadowsEnabled: boolean;
+  hoverMode: boolean;
   focusedBodyId?: string;
   focusedBodyName?: string;
   onToggleCollapse: () => void;
@@ -28,6 +30,7 @@ interface SystemTopNavProps {
   onTogglePause: () => void;
   onStepSpeed: (delta?: number) => void;
   onToggleShadows: () => void;
+  onToggleHoverMode: () => void;
 }
 
 export const SystemTopNav: React.FC<SystemTopNavProps> = ({
@@ -35,6 +38,7 @@ export const SystemTopNav: React.FC<SystemTopNavProps> = ({
   paused,
   speedMultiplier,
   shadowsEnabled,
+  hoverMode,
   focusedBodyId,
   focusedBodyName,
   onToggleCollapse,
@@ -42,6 +46,7 @@ export const SystemTopNav: React.FC<SystemTopNavProps> = ({
   onTogglePause,
   onStepSpeed,
   onToggleShadows,
+  onToggleHoverMode,
 }) => {
   return (
     <div className={styles.top}>
@@ -67,10 +72,21 @@ export const SystemTopNav: React.FC<SystemTopNavProps> = ({
           )}
         </div>
         <h1 className={styles.title}>Solar System</h1>
-        <span className={styles.subtitle}>Drag to orbit • Right-click or Space+drag to pan • WASD to fly</span>
+        <span className={styles.subtitle}>
+          Drag: {hoverMode ? 'Pan/Hover' : 'Orbit'} • Right-click/Space+drag: Pan • WASD/QE: Fly
+        </span>
       </div>
 
       <div className={styles.controls}>
+        <button
+          className={hoverMode ? styles.collapseBtn : styles.speedBtn}
+          onClick={onToggleHoverMode}
+          title={hoverMode ? 'Switch to Orbit Camera Mode' : 'Switch to Free Hover / Drone Camera Mode'}
+        >
+          <Compass size={14} />
+          <span>{hoverMode ? 'Mode: Hover' : 'Mode: Orbit'}</span>
+        </button>
+
         <button
           className={styles.speedBtn}
           onClick={onToggleShadows}
@@ -79,10 +95,12 @@ export const SystemTopNav: React.FC<SystemTopNavProps> = ({
           {shadowsEnabled ? <Moon size={14} /> : <Sun size={14} />}
           <span>{shadowsEnabled ? 'Shadows: ON' : 'Shadows: OFF'}</span>
         </button>
+
         <button className={styles.collapseBtn} onClick={onToggleCollapse}>
           {collapsed ? <Undo size={14} /> : <Flame size={14} />}
           <span>{collapsed ? 'Restore Sun' : 'Collapse Sun'}</span>
         </button>
+
         <button className={styles.speedBtn} onClick={onDiveToSun} title="Dive toward Sun">
           <ZoomIn size={14} />
           <span>Dive</span>

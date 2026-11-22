@@ -16,6 +16,7 @@ export const SolarSystemExperience: React.FC = () => {
   const [speedMultiplier, setSpeedMultiplier] = useState(1);
   const [collapsed, setCollapsed] = useState(false);
   const [shadowsEnabled, setShadowsEnabled] = useState(true);
+  const [hoverMode, setHoverMode] = useState(false);
 
   const { canvasRef, engineRef } = useEngineInstance(() => {
     const engine = new SolarSystemEngine();
@@ -91,6 +92,13 @@ export const SolarSystemExperience: React.FC = () => {
     }
   }, [engineRef]);
 
+  const handleToggleHoverMode = useCallback(() => {
+    if (engineRef.current) {
+      const isHover = engineRef.current.toggleHoverMode();
+      setHoverMode(isHover);
+    }
+  }, [engineRef]);
+
   const handleDiveToSun = useCallback(() => {
     if (engineRef.current) {
       const sun = engineRef.current.getSunNode();
@@ -113,12 +121,14 @@ export const SolarSystemExperience: React.FC = () => {
         speedMultiplier={speedMultiplier}
         collapsed={collapsed}
         shadowsEnabled={shadowsEnabled}
+        hoverMode={hoverMode}
         onTogglePause={handleTogglePause}
         onStepSpeed={handleStepSpeed}
         onToggleCollapse={handleToggleCollapse}
         onDiveToSun={handleDiveToSun}
         onSelectNode={handleSelectNode}
         onToggleShadows={handleToggleShadows}
+        onToggleHoverMode={handleToggleHoverMode}
       />
     </>
   );

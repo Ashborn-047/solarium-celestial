@@ -14,66 +14,67 @@ export class SolarCameraRig {
   idle = 0;
   focus: SystemNode | null = null;
   rel: SystemNode | null = null;
+  hoverMode = false;
 
   private ptr = new Map<number, { clientX: number; clientY: number; isPan: boolean }>();
   private pinch = 0;
   private canvas: HTMLCanvasElement | null = null;
-  private isSpacePressed = false;
-  private activeKeys = new Set<string>();
+  private isSpace = false;
+  private keys = new Set<string>();
   private camRight = new THREE.Vector3();
   private camUp = new THREE.Vector3();
 
   attach(canvas: HTMLCanvasElement): void {
     this.canvas = canvas;
-    canvas.addEventListener('pointerdown', this.onPointerDown);
-    canvas.addEventListener('pointermove', this.onPointerMove);
-    canvas.addEventListener('pointerup', this.onPointerUp);
-    canvas.addEventListener('pointercancel', this.onPointerUp);
+    canvas.addEventListener('pointerdown', this.onDown);
+    canvas.addEventListener('pointermove', this.onMove);
+    canvas.addEventListener('pointerup', this.onUp);
+    canvas.addEventListener('pointercancel', this.onUp);
     canvas.addEventListener('wheel', this.onWheel, { passive: false });
-    canvas.addEventListener('contextmenu', this.onContextMenu);
+    canvas.addEventListener('contextmenu', (e) => e.preventDefault());
     window.addEventListener('keydown', this.onKeyDown);
     window.addEventListener('keyup', this.onKeyUp);
   }
 
   detach(): void {
     if (!this.canvas) return;
-    this.canvas.removeEventListener('pointerdown', this.onPointerDown);
-    this.canvas.removeEventListener('pointermove', this.onPointerMove);
-    this.canvas.removeEventListener('pointerup', this.onPointerUp);
-    this.canvas.removeEventListener('pointercancel', this.onPointerUp);
+    this.canvas.removeEventListener('pointerdown', this.onDown);
+    this.canvas.removeEventListener('pointermove', this.onMove);
+    this.canvas.removeEventListener('pointerup', this.onUp);
+    this.canvas.removeEventListener('pointercancel', this.onUp);
     this.canvas.removeEventListener('wheel', this.onWheel);
-    this.canvas.removeEventListener('contextmenu', this.onContextMenu);
     window.removeEventListener('keydown', this.onKeyDown);
     window.removeEventListener('keyup', this.onKeyUp);
     this.canvas = null;
     this.ptr.clear();
-    this.activeKeys.clear();
+    this.keys.clear();
   }
 
-  private onContextMenu = (e: MouseEvent): void => {
-    e.preventDefault();
-  };
+  toggleHoverMode(): boolean {
+    this.hoverMode = !this.hoverMode;
+    return this.hoverMode;
+  }
 
   private onKeyDown = (e: KeyboardEvent): void => {
     if (e.code === 'Space') {
-      this.isSpacePressed = true;
+      this.isSpace = true;
       if (this.canvas) this.canvas.style.cursor = 'grab';
     }
-    this.activeKeys.add(e.code);
+    this.keys.add(e.code);
   };
 
   private onKeyUp = (e: KeyboardEvent): void => {
     if (e.code === 'Space') {
-      this.isSpacePressed = false;
+      this.isSpace = false;
       if (this.canvas) this.canvas.style.cursor = 'default';
     }
-    this.activeKeys.delete(e.code);
+    this.keys.delete(e.code);
   };
 
-  private onPointerDown = (e: PointerEvent): void => {
+  private onDown = (e: PointerEvent): void => {
     if (!this.canvas) return;
     this.canvas.setPointerCapture(e.pointerId);
-    const isPan = e.button === 2 || e.button === 1 || this.isSpacePressed;
+    const isPan = e.button === 2 || e.button === 1 || this.isSpace || this.hoverMode;
     this.ptr.set(e.pointerId, { clientX: e.clientX, clientY: e.clientY, isPan });
     this.idle = 0;
     if (this.ptr.size === 2) {
@@ -82,7 +83,7 @@ export class SolarCameraRig {
     }
   };
 
-  private onPointerMove = (e: PointerEvent): void => {
+  private onMove = (e: PointerEvent): void => {
     const o = this.ptr.get(e.pointerId);
     if (!o) return;
     const dx = e.clientX - o.clientX;
@@ -100,17 +101,17 @@ export class SolarCameraRig {
       return;
     }
 
-    if (o.isPan || this.isSpacePressed) {
-      const factor = this.dist * 0.0012;
+    if (o.isPan) {
+      const factor = this.dist * 0.0014;
       this.panOffset.addScaledVector(this.camRight, -dx * factor);
       this.panOffset.addScaledVector(this.camUp, dy * factor);
     } else {
       this.yaw -= dx * 0.005;
-      this.pitch = THREE.MathUtils.clamp(this.pitch + dy * 0.005, -1.4, 1.4);
+      this.pitch = THREE.MathUtils.clamp(this.pitch + dy * 0.005, -1.48, 1.48);
     }
   };
 
-  private onPointerUp = (e: PointerEvent): void => {
+  private onUp = (e: PointerEvent): void => {
     this.ptr.delete(e.pointerId);
   };
 
@@ -152,11 +153,13 @@ export class SolarCameraRig {
       -Math.cos(this.yaw) * Math.sin(this.pitch)
     ).normalize();
 
-    const keySpeed = this.dist * dt * 0.75;
-    if (this.activeKeys.has('KeyW') || this.activeKeys.has('ArrowUp')) this.panOffset.addScaledVector(this.camUp, keySpeed);
-    if (this.activeKeys.has('KeyS') || this.activeKeys.has('ArrowDown')) this.panOffset.addScaledVector(this.camUp, -keySpeed);
-    if (this.activeKeys.has('KeyA') || this.activeKeys.has('ArrowLeft')) this.panOffset.addScaledVector(this.camRight, -keySpeed);
-    if (this.activeKeys.has('KeyD') || this.activeKeys.has('ArrowRight')) this.panOffset.addScaledVector(this.camRight, keySpeed);
+    const speed = this.dist * dt * 0.8;
+    if (this.keys.has('KeyW') || this.keys.has('ArrowUp')) this.panOffset.addScaledVector(this.camUp, speed);
+    if (this.keys.has('KeyS') || this.keys.has('ArrowDown')) this.panOffset.addScaledVector(this.camUp, -speed);
+    if (this.keys.has('KeyA') || this.keys.has('ArrowLeft')) this.panOffset.addScaledVector(this.camRight, -speed);
+    if (this.keys.has('KeyD') || this.keys.has('ArrowRight')) this.panOffset.addScaledVector(this.camRight, speed);
+    if (this.keys.has('KeyQ')) this.yaw += dt * 0.9;
+    if (this.keys.has('KeyE')) this.yaw -= dt * 0.9;
 
     if (this.focus) {
       this.focus.group.getWorldPosition(this.fp);

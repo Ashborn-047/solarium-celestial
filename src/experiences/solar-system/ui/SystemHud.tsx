@@ -14,12 +14,14 @@ interface SystemHudProps {
   speedMultiplier: number;
   collapsed: boolean;
   shadowsEnabled: boolean;
+  hoverMode: boolean;
   onTogglePause: () => void;
   onStepSpeed: (delta?: number) => void;
   onToggleCollapse: () => void;
   onDiveToSun: () => void;
   onSelectNode: (node: SystemNode | null) => void;
   onToggleShadows: () => void;
+  onToggleHoverMode: () => void;
 }
 
 export const SystemHud: React.FC<SystemHudProps> = ({
@@ -31,12 +33,14 @@ export const SystemHud: React.FC<SystemHudProps> = ({
   speedMultiplier,
   collapsed,
   shadowsEnabled,
+  hoverMode,
   onTogglePause,
   onStepSpeed,
   onToggleCollapse,
   onDiveToSun,
   onSelectNode,
   onToggleShadows,
+  onToggleHoverMode,
 }) => {
   const currentData = focusedNode?.data;
   const moons = selectedRelNode?.children || [];
@@ -48,6 +52,7 @@ export const SystemHud: React.FC<SystemHudProps> = ({
         paused={paused}
         speedMultiplier={speedMultiplier}
         shadowsEnabled={shadowsEnabled}
+        hoverMode={hoverMode}
         focusedBodyId={currentData?.id}
         focusedBodyName={currentData?.name}
         onToggleCollapse={onToggleCollapse}
@@ -55,6 +60,7 @@ export const SystemHud: React.FC<SystemHudProps> = ({
         onTogglePause={onTogglePause}
         onStepSpeed={onStepSpeed}
         onToggleShadows={onToggleShadows}
+        onToggleHoverMode={onToggleHoverMode}
       />
 
       <div className={styles.labelsLayer}>
@@ -79,7 +85,7 @@ export const SystemHud: React.FC<SystemHudProps> = ({
           <p className={styles.cardNote}>
             {currentData
               ? currentData.note
-              : 'Eight planets, a dwarf planet and 24 moons with high-fidelity texture maps. Drag to orbit, right-click or Space+drag to pan.'}
+              : 'Eight planets, a dwarf planet and 24 moons. Drag to orbit, right-click/Space+drag to pan, WASD to fly through the system.'}
           </p>
           {currentData && (
             <dl className={styles.cardFacts}>

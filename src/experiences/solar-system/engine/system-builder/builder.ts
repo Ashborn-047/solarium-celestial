@@ -26,7 +26,9 @@ export async function buildSolarSystemTree(rootGroup: THREE.Group): Promise<{
 
     const { material, sunMat, uSun } = await createBodyDetailMaterial(data);
     const big = data.radius > 1.5;
-    const geom = new THREE.SphereGeometry(data.radius, big ? 64 : 36, big ? 32 : 18);
+    const isMoon = !!data.parentId;
+    const displayRadius = isMoon ? Math.max(data.radius, 0.22) : data.radius;
+    const geom = new THREE.SphereGeometry(displayRadius, big ? 64 : 36, big ? 32 : 18);
     const mesh = new THREE.Mesh(geom, material);
     if (data.scale) {
       mesh.scale.set(data.scale[0], data.scale[1], data.scale[2]);
