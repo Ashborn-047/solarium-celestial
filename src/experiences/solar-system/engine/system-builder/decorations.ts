@@ -19,14 +19,14 @@ export async function createBodyDecorations(data: BodyData): Promise<BuiltDecora
 
   if (data.id === 'sun') {
     const coronaGeom = new THREE.SphereGeometry(data.radius * 1.45, 64, 32);
-    const coronaMat = createAtmosphereMaterial('#ff9a2a', 2.4, data.radius * 1.45, true);
+    const coronaMat = createAtmosphereMaterial('#ff9a2a', 2.4, 1.45, true);
     result.corona = new THREE.Mesh(coronaGeom, coronaMat);
     return result;
   }
 
   if (data.id === 'earth') {
     try {
-      const cTex = await loadTexture('/textures/planets/earth_clouds.jpg');
+      const cTex = await loadTexture('/textures/planets/earth_c.png');
       result.clouds = new THREE.Mesh(
         new THREE.SphereGeometry(data.radius * 1.008, 128, 64),
         new THREE.MeshStandardMaterial({
@@ -45,7 +45,7 @@ export async function createBodyDecorations(data: BodyData): Promise<BuiltDecora
     const [color, scale, rad] = data.atmosphere;
     const atmRadius = data.radius * scale;
     const atmGeom = new THREE.SphereGeometry(atmRadius, 64, 32);
-    const atmMat = createAtmosphereMaterial(color, rad, atmRadius, false);
+    const atmMat = createAtmosphereMaterial(color, rad, scale, true);
     result.atmosphere = new THREE.Mesh(atmGeom, atmMat);
   }
 

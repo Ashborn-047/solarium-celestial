@@ -20,6 +20,9 @@ export class SolarSystemEngine implements Engine {
   private belt: THREE.Points | null = null;
   private nodes: SystemNode[] = [];
   private sunNode: SystemNode | null = null;
+  private ambientLight: THREE.AmbientLight | null = null;
+  private sunLight: THREE.PointLight | null = null;
+  private shadowsEnabled = true;
   private animId = 0;
   private lastTime = 0;
   private isFrozen = false;
@@ -42,14 +45,15 @@ export class SolarSystemEngine implements Engine {
     this.scene = new THREE.Scene();
     this.camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.05, 6000);
 
-    this.scene.add(new THREE.AmbientLight(0xffffff, 0.25));
+    this.ambientLight = new THREE.AmbientLight(0xffffff, 0.25);
+    this.scene.add(this.ambientLight);
     this.scene.add(createSolarStarfield(3000));
 
     this.sysGroup = new THREE.Group();
     this.scene.add(this.sysGroup);
 
-    const sunLight = new THREE.PointLight(0xfff0dc, 4, 0, 0);
-    this.sysGroup.add(sunLight);
+    this.sunLight = new THREE.PointLight(0xfff0dc, 4, 0, 0);
+    this.sysGroup.add(this.sunLight);
 
     const glowSprite = new THREE.Sprite(
       new THREE.SpriteMaterial({
@@ -73,6 +77,17 @@ export class SolarSystemEngine implements Engine {
     this.loop(this.lastTime);
 
     this.initTree();
+  }
+
+  toggleShadows(): boolean {
+    this.shadowsEnabled = !this.shadowsEnabled;
+    if (this.ambientLight) {
+      this.ambientLight.intensity = this.shadowsEnabled ? 0.25 : 1.35;
+    }
+    if (this.sunLight) {
+      this.sunLight.intensity = this.shadowsEnabled ? 4.0 : 1.0;
+    }
+    return this.shadowsEnabled;
   }
 
   private async initTree(): Promise<void> {
@@ -127,7 +142,6 @@ export class SolarSystemEngine implements Engine {
       if (d.uSun) {
         d.pivot.getWorldPosition(this.tempPos);
         this.tempDir.copy(this.tempPos).negate().normalize();
-        this.camera.matrixWorldInverse.copy(this.camera.matrixWorld).invert();
         this.tempDir.transformDirection(this.camera.matrixWorldInverse);
         d.uSun.value.copy(this.tempDir);
       }

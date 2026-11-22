@@ -15,6 +15,7 @@ export const SolarSystemExperience: React.FC = () => {
   const [paused, setPaused] = useState(false);
   const [speedMultiplier, setSpeedMultiplier] = useState(10);
   const [collapsed, setCollapsed] = useState(false);
+  const [shadowsEnabled, setShadowsEnabled] = useState(true);
 
   const { canvasRef, engineRef } = useEngineInstance(() => {
     const engine = new SolarSystemEngine();
@@ -80,6 +81,13 @@ export const SolarSystemExperience: React.FC = () => {
     }
   }, [engineRef, collapsed]);
 
+  const handleToggleShadows = useCallback(() => {
+    if (engineRef.current) {
+      const isShadowed = engineRef.current.toggleShadows();
+      setShadowsEnabled(isShadowed);
+    }
+  }, [engineRef]);
+
   const handleDiveToSun = useCallback(() => {
     if (engineRef.current) {
       const sun = engineRef.current.getSunNode();
@@ -101,11 +109,13 @@ export const SolarSystemExperience: React.FC = () => {
         paused={paused}
         speedMultiplier={speedMultiplier}
         collapsed={collapsed}
+        shadowsEnabled={shadowsEnabled}
         onTogglePause={handleTogglePause}
         onStepSpeed={handleStepSpeed}
         onToggleCollapse={handleToggleCollapse}
         onDiveToSun={handleDiveToSun}
         onSelectNode={handleSelectNode}
+        onToggleShadows={handleToggleShadows}
       />
     </>
   );

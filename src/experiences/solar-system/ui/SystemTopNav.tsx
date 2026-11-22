@@ -1,30 +1,34 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Play, Pause, FastForward, Flame, Undo, ZoomIn, ArrowLeft, Globe2, CircleDot } from 'lucide-react';
+import { Play, Pause, FastForward, Flame, Undo, ZoomIn, ArrowLeft, Globe2, CircleDot, Sun, Moon } from 'lucide-react';
 import styles from './SystemTopNav.module.css';
 
 interface SystemTopNavProps {
   collapsed: boolean;
   paused: boolean;
   speedMultiplier: number;
+  shadowsEnabled: boolean;
   focusedBodyId?: string;
   focusedBodyName?: string;
   onToggleCollapse: () => void;
   onDiveToSun: () => void;
   onTogglePause: () => void;
   onStepSpeed: () => void;
+  onToggleShadows: () => void;
 }
 
 export const SystemTopNav: React.FC<SystemTopNavProps> = ({
   collapsed,
   paused,
   speedMultiplier,
+  shadowsEnabled,
   focusedBodyId,
   focusedBodyName,
   onToggleCollapse,
   onDiveToSun,
   onTogglePause,
   onStepSpeed,
+  onToggleShadows,
 }) => {
   return (
     <div className={styles.top}>
@@ -50,10 +54,18 @@ export const SystemTopNav: React.FC<SystemTopNavProps> = ({
           )}
         </div>
         <h1 className={styles.title}>Solar System</h1>
-        <span className={styles.subtitle}>High-fidelity planets, 24 moons, real orbital periods.</span>
+        <span className={styles.subtitle}>Drag to orbit • Right-click or Space+drag to pan • WASD to fly</span>
       </div>
 
       <div className={styles.controls}>
+        <button
+          className={styles.speedBtn}
+          onClick={onToggleShadows}
+          title={shadowsEnabled ? 'Turn shadows off (Full illumination)' : 'Turn shadows on (Natural day/night)'}
+        >
+          {shadowsEnabled ? <Moon size={14} /> : <Sun size={14} />}
+          <span>{shadowsEnabled ? 'Shadows: ON' : 'Shadows: OFF'}</span>
+        </button>
         <button className={styles.collapseBtn} onClick={onToggleCollapse}>
           {collapsed ? <Undo size={14} /> : <Flame size={14} />}
           <span>{collapsed ? 'Restore Sun' : 'Collapse Sun'}</span>

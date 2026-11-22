@@ -51,7 +51,7 @@ totalEmissiveRadiance*=emissiveColor.rgb*smoothstep(.05,-.3,nd);
     }
     mesh = new THREE.Mesh(new THREE.SphereGeometry(1, 160, 80), mat);
     group.add(mesh);
-    const cTex = await loadTexture('/textures/planets/earth_clouds.jpg');
+    const cTex = await loadTexture('/textures/planets/earth_c.png');
     clouds = new THREE.Mesh(
       new THREE.SphereGeometry(1.007, 128, 64),
       new THREE.MeshStandardMaterial({ map: cTex, transparent: true, depthWrite: false, roughness: 1 })

@@ -13,11 +13,13 @@ interface SystemHudProps {
   paused: boolean;
   speedMultiplier: number;
   collapsed: boolean;
+  shadowsEnabled: boolean;
   onTogglePause: () => void;
   onStepSpeed: () => void;
   onToggleCollapse: () => void;
   onDiveToSun: () => void;
   onSelectNode: (node: SystemNode | null) => void;
+  onToggleShadows: () => void;
 }
 
 export const SystemHud: React.FC<SystemHudProps> = ({
@@ -28,11 +30,13 @@ export const SystemHud: React.FC<SystemHudProps> = ({
   paused,
   speedMultiplier,
   collapsed,
+  shadowsEnabled,
   onTogglePause,
   onStepSpeed,
   onToggleCollapse,
   onDiveToSun,
   onSelectNode,
+  onToggleShadows,
 }) => {
   const currentData = focusedNode?.data;
   const moons = selectedRelNode?.children || [];
@@ -43,12 +47,14 @@ export const SystemHud: React.FC<SystemHudProps> = ({
         collapsed={collapsed}
         paused={paused}
         speedMultiplier={speedMultiplier}
+        shadowsEnabled={shadowsEnabled}
         focusedBodyId={currentData?.id}
         focusedBodyName={currentData?.name}
         onToggleCollapse={onToggleCollapse}
         onDiveToSun={onDiveToSun}
         onTogglePause={onTogglePause}
         onStepSpeed={onStepSpeed}
+        onToggleShadows={onToggleShadows}
       />
 
       <div className={styles.labelsLayer}>
@@ -73,7 +79,7 @@ export const SystemHud: React.FC<SystemHudProps> = ({
           <p className={styles.cardNote}>
             {currentData
               ? currentData.note
-              : 'Eight planets, a dwarf planet and 24 moons with high-fidelity texture maps. Distances and sizes compressed to fit. Tap a name to fly there; drag to orbit.'}
+              : 'Eight planets, a dwarf planet and 24 moons with high-fidelity texture maps. Drag to orbit, right-click or Space+drag to pan.'}
           </p>
           {currentData && (
             <dl className={styles.cardFacts}>

@@ -10,13 +10,18 @@ export class SolarCameraRig {
   from = new THREE.Vector3();
   target = new THREE.Vector3();
   fp = new THREE.Vector3();
+  panOffset = new THREE.Vector3();
   idle = 0;
   focus: SystemNode | null = null;
   rel: SystemNode | null = null;
 
-  private ptr = new Map<number, { clientX: number; clientY: number }>();
+  private ptr = new Map<number, { clientX: number; clientY: number; isPan: boolean }>();
   private pinch = 0;
   private canvas: HTMLCanvasElement | null = null;
+  private isSpacePressed = false;
+  private activeKeys = new Set<string>();
+  private camRight = new THREE.Vector3();
+  private camUp = new THREE.Vector3();
 
   attach(canvas: HTMLCanvasElement): void {
     this.canvas = canvas;
@@ -25,6 +30,9 @@ export class SolarCameraRig {
     canvas.addEventListener('pointerup', this.onPointerUp);
     canvas.addEventListener('pointercancel', this.onPointerUp);
     canvas.addEventListener('wheel', this.onWheel, { passive: false });
+    canvas.addEventListener('contextmenu', this.onContextMenu);
+    window.addEventListener('keydown', this.onKeyDown);
+    window.addEventListener('keyup', this.onKeyUp);
   }
 
   detach(): void {
@@ -34,14 +42,39 @@ export class SolarCameraRig {
     this.canvas.removeEventListener('pointerup', this.onPointerUp);
     this.canvas.removeEventListener('pointercancel', this.onPointerUp);
     this.canvas.removeEventListener('wheel', this.onWheel);
+    this.canvas.removeEventListener('contextmenu', this.onContextMenu);
+    window.removeEventListener('keydown', this.onKeyDown);
+    window.removeEventListener('keyup', this.onKeyUp);
     this.canvas = null;
     this.ptr.clear();
+    this.activeKeys.clear();
   }
+
+  private onContextMenu = (e: MouseEvent): void => {
+    e.preventDefault();
+  };
+
+  private onKeyDown = (e: KeyboardEvent): void => {
+    if (e.code === 'Space') {
+      this.isSpacePressed = true;
+      if (this.canvas) this.canvas.style.cursor = 'grab';
+    }
+    this.activeKeys.add(e.code);
+  };
+
+  private onKeyUp = (e: KeyboardEvent): void => {
+    if (e.code === 'Space') {
+      this.isSpacePressed = false;
+      if (this.canvas) this.canvas.style.cursor = 'default';
+    }
+    this.activeKeys.delete(e.code);
+  };
 
   private onPointerDown = (e: PointerEvent): void => {
     if (!this.canvas) return;
     this.canvas.setPointerCapture(e.pointerId);
-    this.ptr.set(e.pointerId, { clientX: e.clientX, clientY: e.clientY });
+    const isPan = e.button === 2 || e.button === 1 || this.isSpacePressed;
+    this.ptr.set(e.pointerId, { clientX: e.clientX, clientY: e.clientY, isPan });
     this.idle = 0;
     if (this.ptr.size === 2) {
       const [a, b] = Array.from(this.ptr.values());
@@ -52,7 +85,9 @@ export class SolarCameraRig {
   private onPointerMove = (e: PointerEvent): void => {
     const o = this.ptr.get(e.pointerId);
     if (!o) return;
-    this.ptr.set(e.pointerId, { clientX: e.clientX, clientY: e.clientY });
+    const dx = e.clientX - o.clientX;
+    const dy = e.clientY - o.clientY;
+    this.ptr.set(e.pointerId, { clientX: e.clientX, clientY: e.clientY, isPan: o.isPan });
     this.idle = 0;
 
     if (this.ptr.size === 2) {
@@ -65,10 +100,14 @@ export class SolarCameraRig {
       return;
     }
 
-    const dx = e.clientX - o.clientX;
-    const dy = e.clientY - o.clientY;
-    this.yaw -= dx * 0.005;
-    this.pitch = THREE.MathUtils.clamp(this.pitch + dy * 0.005, -1.4, 1.4);
+    if (o.isPan || this.isSpacePressed) {
+      const factor = this.dist * 0.0012;
+      this.panOffset.addScaledVector(this.camRight, -dx * factor);
+      this.panOffset.addScaledVector(this.camUp, dy * factor);
+    } else {
+      this.yaw -= dx * 0.005;
+      this.pitch = THREE.MathUtils.clamp(this.pitch + dy * 0.005, -1.4, 1.4);
+    }
   };
 
   private onPointerUp = (e: PointerEvent): void => {
@@ -89,6 +128,7 @@ export class SolarCameraRig {
     this.focus = node;
     this.rel = node && node.data.id !== 'sun' ? (!node.parent || node.parent.data.id === 'sun' ? node : node.parent) : null;
     this.from.copy(this.target);
+    this.panOffset.set(0, 0, 0);
     this.tr = 0;
 
     if (!node) {
@@ -105,6 +145,19 @@ export class SolarCameraRig {
   }
 
   update(dt: number, camera: THREE.PerspectiveCamera): void {
+    this.camRight.set(Math.cos(this.yaw), 0, -Math.sin(this.yaw)).normalize();
+    this.camUp.set(
+      -Math.sin(this.yaw) * Math.sin(this.pitch),
+      Math.cos(this.pitch),
+      -Math.cos(this.yaw) * Math.sin(this.pitch)
+    ).normalize();
+
+    const keySpeed = this.dist * dt * 0.75;
+    if (this.activeKeys.has('KeyW') || this.activeKeys.has('ArrowUp')) this.panOffset.addScaledVector(this.camUp, keySpeed);
+    if (this.activeKeys.has('KeyS') || this.activeKeys.has('ArrowDown')) this.panOffset.addScaledVector(this.camUp, -keySpeed);
+    if (this.activeKeys.has('KeyA') || this.activeKeys.has('ArrowLeft')) this.panOffset.addScaledVector(this.camRight, -keySpeed);
+    if (this.activeKeys.has('KeyD') || this.activeKeys.has('ArrowRight')) this.panOffset.addScaledVector(this.camRight, keySpeed);
+
     if (this.focus) {
       this.focus.group.getWorldPosition(this.fp);
     } else {
@@ -113,10 +166,10 @@ export class SolarCameraRig {
 
     this.tr = Math.min(1, this.tr + dt / 1.4);
     const e = this.tr * this.tr * (3 - 2 * this.tr);
-    this.target.lerpVectors(this.from, this.fp, e);
+    this.target.lerpVectors(this.from, this.fp, e).add(this.panOffset);
 
     this.idle += dt;
-    if (this.idle > 4 && !this.focus) {
+    if (this.idle > 4 && !this.focus && this.panOffset.lengthSq() < 0.01) {
       this.yaw += 0.02 * dt;
     }
 
