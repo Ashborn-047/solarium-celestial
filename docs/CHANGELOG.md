@@ -45,3 +45,12 @@ All notable changes to this project are documented here.
 - Implemented Solar System experience (`/solar-system`) with 3000-star background, 2200-asteroid belt, multi-body hierarchy, real orbital periods, smooth camera transitions, and dynamic 2D projected labels
 - Built Central Hub page (`/`) with 4 navigational cards and lucide-react iconography
 - Configured React Router with lazy-loaded code-split bundles and suspense fallbacks
+
+
+## Phase 4 — Animations & Parity Verification
+
+- Extracted and modularized 10 discrete animation handlers into `src/animations/` (`orbit`, `spin`, `tidal-lock`, `camera-transition`, `inertia`, `cloud-drift`, `belt-drift`, `sun-surface`, `bh-disk-time`, `intro-dolly`)
+- Created automated Playwright verification suite (`scripts/parity-check.mjs`) using headless Chromium with SwiftShader software rasterizer (`--use-angle=swiftshader --enable-unsafe-swiftshader`)
+- Verified visual parity with frozen clock `?freeze=1` across desktop (1280x800) and mobile (390x844) viewports against all legacy single-file HTML benchmarks
+- Captured and committed 12 parity comparison screenshots under `docs/parity/`
+- Confirmed deterministic star distribution, orbital velocities, camera transitions, and relativistic raymarch convergence
