@@ -54,3 +54,12 @@ All notable changes to this project are documented here.
 - Verified visual parity with frozen clock `?freeze=1` across desktop (1280x800) and mobile (390x844) viewports against all legacy single-file HTML benchmarks
 - Captured and committed 12 parity comparison screenshots under `docs/parity/`
 - Confirmed deterministic star distribution, orbital velocities, camera transitions, and relativistic raymarch convergence
+
+
+## Phase 5 — Standalone Single-File Builds
+
+- Created entry points for router-free standalone builds (`single/black-hole.html`, `single/solar-system.html`, `single/bodies.html`, and `src/entries/`)
+- Engineered automatic texture-inlining Vite plugin (`inlineTexturesPlugin`) in `vite.single.config.ts` converting `/textures/` paths to base64 data URIs exclusively in standalone builds
+- Automated single-bundle builds with `inlineDynamicImports` in `scripts/build-single.mjs`
+- Verified file size compliance: `black-hole.html` (0.82 MB), `solar-system.html` (8.27 MB), and `bodies.html` (8.25 MB) — all strictly under the 16 MB limit
+- Automated headless browser tests confirming that all three standalone files open and render cleanly via `file://` URIs with zero network requests

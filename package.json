@@ -10,7 +10,7 @@
     "preview": "vite preview",
     "lint": "eslint src/",
     "check-lines": "node scripts/check-lines.mjs",
-    "build:single": "vite build --config vite.single.config.ts",
+    "build:single": "node scripts/build-single.mjs",
     "tsc": "tsc --noEmit",
     "prepare": "husky"
   },
